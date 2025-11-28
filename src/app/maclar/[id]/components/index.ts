@@ -1,0 +1,7 @@
+export { MatchDetailTabs } from './MatchDetailTabs';
+export { MatchStatisticsSection } from './MatchStatisticsSection';
+export { TopPlayersSection } from './TopPlayersSection';
+export { TimelineSection } from './TimelineSection';
+export { LineupSection } from './LineupSection';
+export { PlayerStatsSection } from './PlayerStatsSection';
+export { XGDisplay } from './XGDisplay';

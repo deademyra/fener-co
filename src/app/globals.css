@@ -1,0 +1,503 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =============================================
+   CSS CUSTOM PROPERTIES
+   ============================================= */
+
+:root {
+  /* Typography */
+  --font-display: 'Kanit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* Colors */
+  --fb-navy: #1E3A8A;
+  --fb-navy-dark: #152a64;
+  --fb-navy-light: #2d4ea6;
+  --fb-yellow: #FCD34D;
+  --fb-yellow-dark: #F59E0B;
+  --fb-yellow-light: #FDE68A;
+  --fb-gold: #FBBF24;
+  
+  /* Status Colors */
+  --color-live: #ef4444;
+  --color-win: #22c55e;
+  --color-draw: #f59e0b;
+  --color-loss: #ef4444;
+  
+  /* Pitch */
+  --pitch-green: #2d5a27;
+  --pitch-green-light: #3d7a37;
+  
+  /* Shadows */
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --shadow-card-hover: 0 8px 30px rgba(0, 0, 0, 0.2);
+  --shadow-glow-yellow: 0 0 30px rgba(252, 211, 77, 0.3);
+}
+
+/* =============================================
+   BASE STYLES
+   ============================================= */
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  
+  /* Dark Mode Only - Default */
+  body {
+    @apply bg-gray-950 text-gray-100 font-body antialiased;
+    background-image: 
+      radial-gradient(ellipse at top, rgba(30, 58, 138, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at bottom right, rgba(252, 211, 77, 0.05) 0%, transparent 40%);
+    min-height: 100vh;
+  }
+  
+  h1, h2, h3, h4 {
+    @apply font-body font-bold tracking-tight;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-900;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-fb-navy rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-fb-navy-light;
+  }
+}
+
+/* =============================================
+   COMPONENT STYLES
+   ============================================= */
+
+@layer components {
+  /* Card styles */
+  .card {
+    @apply bg-gray-900/80 backdrop-blur-sm border border-gray-800 rounded-xl;
+    @apply transition-all duration-300 ease-out;
+    @apply hover:border-gray-700;
+  }
+  
+  .card-hover {
+    @apply hover:shadow-card-hover hover:-translate-y-1;
+  }
+  
+  .card-glow {
+    @apply hover:shadow-glow-yellow;
+  }
+  
+  /* Button styles */
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900;
+  }
+  
+  .btn-primary {
+    @apply bg-fb-navy text-white hover:bg-fb-navy-light;
+    @apply focus:ring-fb-navy;
+  }
+  
+  .btn-secondary {
+    @apply bg-fb-yellow text-gray-900 hover:bg-fb-yellow-dark;
+    @apply focus:ring-fb-yellow;
+  }
+  
+  .btn-ghost {
+    @apply bg-transparent text-gray-300 hover:bg-gray-800 hover:text-white;
+    @apply focus:ring-gray-700;
+  }
+  
+  /* Badge styles */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .badge-live {
+    @apply bg-live/20 text-red-400 animate-pulse-live;
+  }
+  
+  .badge-win {
+    @apply bg-win/20 text-green-400;
+  }
+  
+  .badge-draw {
+    @apply bg-draw/20 text-yellow-400;
+  }
+  
+  .badge-loss {
+    @apply bg-loss/20 text-red-400;
+  }
+  
+  /* Form indicator dots */
+  .form-dot {
+    @apply w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold;
+  }
+  
+  .form-dot-W {
+    @apply bg-win text-white;
+  }
+  
+  .form-dot-D {
+    @apply bg-draw text-white;
+  }
+  
+  .form-dot-L {
+    @apply bg-loss text-white;
+  }
+  
+  /* Score display */
+  .score-display {
+    @apply font-display text-4xl md:text-5xl lg:text-6xl tracking-tight;
+  }
+  
+  .score-live {
+    @apply text-fb-yellow;
+  }
+  
+  /* Team logo container */
+  .team-logo {
+    @apply relative flex items-center justify-center;
+    @apply bg-white/10 rounded-full p-2;
+  }
+  
+  .team-logo-lg {
+    @apply w-20 h-20 md:w-24 md:h-24;
+  }
+  
+  .team-logo-md {
+    @apply w-12 h-12 md:w-14 md:h-14;
+  }
+  
+  .team-logo-sm {
+    @apply w-8 h-8;
+  }
+  
+  /* Stat bar */
+  .stat-bar {
+    @apply h-2 rounded-full overflow-hidden bg-gray-700;
+  }
+  
+  .stat-bar-fill {
+    @apply h-full rounded-full transition-all duration-500 ease-out;
+  }
+  
+  .stat-bar-home {
+    @apply bg-fb-navy;
+  }
+  
+  .stat-bar-away {
+    @apply bg-gray-500;
+  }
+  
+  /* Tab navigation */
+  .tab {
+    @apply px-4 py-2 text-sm font-medium transition-colors duration-200;
+    @apply border-b-2 border-transparent;
+    @apply hover:text-fb-yellow;
+  }
+  
+  .tab-active {
+    @apply text-fb-yellow border-fb-yellow;
+  }
+  
+  /* Match card */
+  .match-card {
+    @apply card p-4 cursor-pointer;
+    @apply hover:border-fb-navy/50;
+  }
+  
+  .match-card-live {
+    @apply border-live/50 bg-live/5;
+  }
+  
+  /* Section header */
+  .section-header {
+    @apply flex items-center justify-between mb-4;
+  }
+  
+  .section-title {
+    @apply font-display text-xl md:text-2xl text-fb-yellow tracking-wide;
+  }
+  
+  /* Table styles */
+  .data-table {
+    @apply w-full text-sm;
+  }
+  
+  .data-table th {
+    @apply px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider;
+    @apply border-b border-gray-800;
+  }
+  
+  .data-table td {
+    @apply px-3 py-3 border-b border-gray-800/50;
+  }
+  
+  .data-table tr:hover td {
+    @apply bg-gray-800/30;
+  }
+  
+  .data-table .highlight {
+    @apply bg-fb-navy/20;
+  }
+  
+  /* Loading skeleton */
+  .skeleton {
+    @apply animate-pulse bg-gray-800 rounded;
+  }
+  
+  /* Timeline event */
+  .timeline-event {
+    @apply flex items-start gap-3 py-3 border-b border-gray-800/50 last:border-0;
+  }
+  
+  .timeline-minute {
+    @apply w-12 text-sm font-mono text-gray-400 shrink-0;
+  }
+  
+  .timeline-icon {
+    @apply w-8 h-8 flex items-center justify-center text-lg;
+  }
+  
+  .timeline-content {
+    @apply flex-1;
+  }
+  
+  /* Formation grid */
+  .formation-grid {
+    @apply relative aspect-[68/105] w-full max-w-md mx-auto;
+    background: 
+      linear-gradient(to bottom, var(--pitch-green) 0%, var(--pitch-green-light) 50%, var(--pitch-green) 100%);
+    @apply rounded-lg overflow-hidden;
+  }
+  
+  .formation-player {
+    @apply absolute w-8 h-8 -ml-4 -mt-4;
+    @apply bg-fb-navy border-2 border-white rounded-full;
+    @apply flex items-center justify-center text-xs font-bold text-white;
+    @apply shadow-lg;
+  }
+  
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-fb-yellow to-fb-gold bg-clip-text text-transparent;
+  }
+  
+  /* Hero section */
+  .hero-gradient {
+    background: linear-gradient(180deg, rgba(30,58,138,0.95) 0%, rgba(21,42,100,0.98) 100%);
+  }
+  
+  /* Navigation */
+  .nav-link {
+    @apply px-3 py-2 text-sm font-medium text-gray-300 rounded-md;
+    @apply transition-colors duration-200;
+    @apply hover:text-white hover:bg-gray-800;
+  }
+  
+  .nav-link-active {
+    @apply text-fb-yellow bg-gray-800/50;
+  }
+}
+
+/* =============================================
+   UTILITY CLASSES
+   ============================================= */
+
+@layer utilities {
+  /* Text shadow for readability on images */
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+  .text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Gradient overlays */
+  .gradient-overlay-bottom {
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+  }
+  
+  .gradient-overlay-top {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
+  }
+  
+  /* Hide scrollbar but keep functionality */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Aspect ratios */
+  .aspect-pitch {
+    aspect-ratio: 68 / 105;
+  }
+  
+  .aspect-badge {
+    aspect-ratio: 1 / 1;
+  }
+  
+  /* Glass effect */
+  .glass {
+    @apply bg-gray-900/60 backdrop-blur-md;
+  }
+  
+  /* Border glow on focus */
+  .focus-glow:focus {
+    @apply ring-2 ring-fb-yellow/50 ring-offset-2 ring-offset-gray-900;
+  }
+  
+  /* Shimmer loading effect */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+}
+
+/* =============================================
+   DARK LOGO FILTER
+   ============================================= */
+
+/* Dark zemin üzerinde görünmeyen logolar için beyaz filter */
+.dark-logo-filter {
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+}
+
+/* Custom scrollbar for timeline */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-gray-800/50 rounded-full;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-gray-600 rounded-full;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500;
+}
+
+/* =============================================
+   ANIMATIONS
+   ============================================= */
+
+@keyframes pulse-live {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Logo scroll animation - 7 items, 12 seconds */
+@keyframes logo-scroll {
+  0%, 10%       { transform: translateY(0); }
+  14.2%, 24.2%  { transform: translateY(-1em); }
+  28.5%, 38.5%  { transform: translateY(-2em); }
+  42.8%, 52.8%  { transform: translateY(-3em); }
+  57.1%, 67.1%  { transform: translateY(-4em); }
+  71.4%, 81.4%  { transform: translateY(-5em); }
+  85.7%, 95.7%  { transform: translateY(-6em); }
+  100%          { transform: translateY(0); }
+}
+
+.animate-logo-scroll {
+  animation: logo-scroll 12s infinite cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.animate-slide-down {
+  animation: slide-down 0.3s ease-out;
+}
+
+/* =============================================
+   RESPONSIVE UTILITIES
+   ============================================= */
+
+/* Mobile-first touch targets */
+@media (max-width: 640px) {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
