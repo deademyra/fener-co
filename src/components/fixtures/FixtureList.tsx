@@ -15,6 +15,7 @@ interface FixtureListProps {
   compact?: boolean;
   maxItems?: number;
   showLeague?: boolean;
+  showDate?: boolean;
   emptyMessage?: string;
 }
 
@@ -26,6 +27,7 @@ export function FixtureList({
   compact = false,
   maxItems,
   showLeague = true,
+  showDate = true,
   emptyMessage = 'Maç bulunamadı'
 }: FixtureListProps) {
   const displayFixtures = maxItems ? fixtures.slice(0, maxItems) : fixtures;
@@ -63,6 +65,7 @@ export function FixtureList({
             key={fixture.fixture.id}
             match={fixtureToMatchCard(fixture)}
             showLeague={showLeague}
+            showDate={showDate}
             compact={compact}
           />
         ))}
@@ -79,6 +82,7 @@ export function UpcomingFixtures({ fixtures, maxItems = 5 }: { fixtures: Fixture
       showViewAll
       viewAllLink={ROUTES.MATCHES}
       maxItems={maxItems}
+      showDate={true}
       emptyMessage="Yaklaşan maç bulunamadı"
     />
   );
@@ -90,8 +94,9 @@ export function RecentResults({ fixtures, maxItems = 5 }: { fixtures: Fixture[];
       fixtures={fixtures}
       title="SON SONUÇLAR"
       showViewAll
-      viewAllLink={`${ROUTES.MATCHES}?tab=sonuclar`}
+      viewAllLink={`${ROUTES.MATCHES}?tab=oynanan`}
       maxItems={maxItems}
+      showDate={true}
       emptyMessage="Sonuç bulunamadı"
     />
   );

@@ -2,22 +2,60 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { MatchCardData, FixtureStatus } from '@/types';
+import { MatchCardData } from '@/types';
 import { cn, formatMatchDateTime, getStatusText, isLive, isFinished, isScheduled } from '@/lib/utils';
 import { FENERBAHCE_TEAM_ID, ROUTES } from '@/lib/constants';
 
 interface MatchCardProps {
   match: MatchCardData;
   showLeague?: boolean;
+  showDate?: boolean;
   compact?: boolean;
 }
 
-export function MatchCard({ match, showLeague = true, compact = false }: MatchCardProps) {
+// Fenerbahçe için maç sonucu hesapla
+function getFenerbahceResult(match: MatchCardData): 'W' | 'D' | 'L' | null {
+  const isFBHome = match.homeTeam.id === FENERBAHCE_TEAM_ID;
+  const isFBAway = match.awayTeam.id === FENERBAHCE_TEAM_ID;
+  
+  if (!isFBHome && !isFBAway) return null;
+  if (match.homeScore === null || match.awayScore === null) return null;
+  
+  const fbScore = isFBHome ? match.homeScore : match.awayScore;
+  const opponentScore = isFBHome ? match.awayScore : match.homeScore;
+  
+  if (fbScore > opponentScore) return 'W';
+  if (fbScore < opponentScore) return 'L';
+  return 'D';
+}
+
+// Sonuç göstergesi component'i
+function ResultIndicator({ result }: { result: 'W' | 'D' | 'L' }) {
+  const config = {
+    W: { label: 'G', bg: 'bg-green-500', text: 'text-white' },
+    D: { label: 'B', bg: 'bg-amber-500', text: 'text-white' },
+    L: { label: 'M', bg: 'bg-red-500', text: 'text-white' },
+  };
+  
+  const { label, bg, text } = config[result];
+  
+  return (
+    <div className={cn(
+      'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0',
+      bg, text
+    )}>
+      {label}
+    </div>
+  );
+}
+
+export function MatchCard({ match, showLeague = true, showDate = true, compact = false }: MatchCardProps) {
   const { date, time } = formatMatchDateTime(match.date);
   const isFBHome = match.homeTeam.id === FENERBAHCE_TEAM_ID;
   const isFBAway = match.awayTeam.id === FENERBAHCE_TEAM_ID;
   const isLiveMatch = isLive(match.status);
   const isFinishedMatch = isFinished(match.status);
+  const result = isFinishedMatch ? getFenerbahceResult(match) : null;
   
   return (
     <Link href={ROUTES.MATCH_DETAIL(match.id)}>
@@ -30,22 +68,32 @@ export function MatchCard({ match, showLeague = true, compact = false }: MatchCa
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
-          {showLeague && (
-            <div className="flex items-center gap-2">
-              <Image
-                src={match.league.logo}
-                alt={match.league.name}
-                width={16}
-                height={16}
-                className="object-contain"
-              />
-              <span className="text-xs text-gray-400 truncate max-w-[120px]">
-                {match.league.name}
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            {/* League */}
+            {showLeague && (
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <Image
+                  src={match.league.logo}
+                  alt={match.league.name}
+                  width={16}
+                  height={16}
+                  className="object-contain dark-logo-filter"
+                />
+                <span className="text-xs text-gray-400 truncate max-w-[100px]">
+                  {match.league.name}
+                </span>
+              </div>
+            )}
+            
+            {/* Date - always show for finished matches */}
+            {showDate && isFinishedMatch && (
+              <span className="text-xs text-gray-500">
+                {date}
               </span>
-            </div>
-          )}
+            )}
+          </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             {isLiveMatch ? (
               <span className="badge badge-live">
                 <span className="w-1.5 h-1.5 bg-red-400 rounded-full mr-1.5 animate-pulse-live" />
@@ -100,7 +148,12 @@ export function MatchCard({ match, showLeague = true, compact = false }: MatchCa
           {/* Score */}
           <div className="flex items-center gap-2 md:gap-3 shrink-0">
             {isScheduled(match.status) ? (
-              <span className="text-lg text-gray-500">vs</span>
+              <div className="text-center">
+                <span className="text-lg text-gray-500">vs</span>
+                {showDate && (
+                  <div className="text-xs text-fb-yellow mt-0.5">{time}</div>
+                )}
+              </div>
             ) : (
               <>
                 <span className={cn(
@@ -149,6 +202,13 @@ export function MatchCard({ match, showLeague = true, compact = false }: MatchCa
               </span>
             )}
           </div>
+          
+          {/* Result Indicator for Fenerbahçe - Far Right */}
+          {result && (
+            <div className="ml-2 flex-shrink-0">
+              <ResultIndicator result={result} />
+            </div>
+          )}
         </div>
 
         {/* Compact team names */}

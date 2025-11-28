@@ -76,81 +76,113 @@ export function TopPlayersSection({
     <div className="card p-4">
       <h3 className="section-title text-lg mb-4">ÖNE ÇIKAN OYUNCULAR</h3>
       
-      <div className="space-y-3">
+      {/* Table Header - for alignment reference */}
+      <div className="hidden sm:flex items-center gap-2 px-3 pb-2 border-b border-gray-800 mb-2">
+        <div className="flex-1" /> {/* Spacer for player info */}
+        <div className="flex items-center justify-end gap-2">
+          <span className="text-[10px] text-gray-500 uppercase w-10 text-right">Puan</span>
+          <span className="text-[10px] text-gray-500 uppercase w-10 text-right">Dk</span>
+          <span className="text-[10px] text-gray-500 uppercase w-8 text-right">Gol</span>
+          <span className="text-[10px] text-gray-500 uppercase w-8 text-right">Ast</span>
+        </div>
+      </div>
+      
+      <div className="space-y-2">
         {topPlayers.map((player, index) => {
           const stats = player.statistics[0];
           const rating = parseFloat(stats.games.rating || '0');
           const isFBPlayer = player.teamId === FENERBAHCE_TEAM_ID;
+          const goals = stats.goals.total || 0;
+          const assists = stats.goals.assists || 0;
+          const minutes = stats.games.minutes || 0;
           
           return (
             <Link
               key={player.player.id}
               href={ROUTES.PLAYER_DETAIL(player.player.id)}
               className={cn(
-                'flex items-center gap-3 p-3 rounded-lg transition-all',
+                'flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg transition-all',
                 'hover:bg-gray-800/50',
                 index === 0 && 'bg-gradient-to-r from-fb-navy/30 to-transparent border border-fb-navy/30'
               )}
             >
-              {/* Rank */}
-              <span className={cn(
-                'w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold',
-                index === 0 ? 'bg-fb-yellow text-fb-navy' : 'bg-gray-700 text-gray-300'
-              )}>
-                {index + 1}
-              </span>
-              
-              {/* Team Logo */}
-              <Image
-                src={player.teamLogo}
-                alt=""
-                width={24}
-                height={24}
-                className="object-contain"
-              />
-              
-              {/* Player Photo */}
-              <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-700">
+              {/* Left side: Rank + Team Logo + Photo + Name */}
+              <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                {/* Rank */}
+                <span className={cn(
+                  'w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold flex-shrink-0',
+                  index === 0 ? 'bg-fb-yellow text-fb-navy' : 'bg-gray-700 text-gray-300'
+                )}>
+                  {index + 1}
+                </span>
+                
+                {/* Team Logo */}
                 <Image
-                  src={player.player.photo}
-                  alt={player.player.name}
-                  width={40}
-                  height={40}
-                  className="object-cover w-full h-full"
+                  src={player.teamLogo}
+                  alt=""
+                  width={20}
+                  height={20}
+                  className="object-contain flex-shrink-0 hidden sm:block"
                 />
-              </div>
-              
-              {/* Player Name */}
-              <div className="flex-1 min-w-0">
+                
+                {/* Player Photo */}
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-gray-700 flex-shrink-0">
+                  <Image
+                    src={player.player.photo}
+                    alt={player.player.name}
+                    width={40}
+                    height={40}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+                
+                {/* Player Name */}
                 <p className={cn(
-                  'font-medium truncate',
+                  'font-medium truncate text-sm',
                   isFBPlayer ? 'text-fb-yellow' : 'text-white'
                 )}>
                   {shortenName(player.player.name)}
                 </p>
               </div>
               
-              {/* Rating */}
-              <div className={cn(
-                'px-2 py-1 rounded text-xs font-bold text-white',
-                getRatingColor(rating)
-              )}>
-                {rating.toFixed(1)}
-              </div>
-              
-              {/* Stats */}
-              <div className="flex items-center gap-3 text-sm text-gray-400">
-                <span title="Dakika">{stats.games.minutes || 0}'</span>
-                {(stats.goals.total || 0) > 0 && (
-                  <span className="text-green-400" title="Gol">
-                    ⚽ {stats.goals.total}
+              {/* Right side: Stats - Fixed width columns for alignment */}
+              <div className="flex items-center justify-end gap-2 flex-shrink-0">
+                {/* Rating */}
+                <div className={cn(
+                  'w-10 h-6 rounded flex items-center justify-center text-xs font-bold text-white',
+                  getRatingColor(rating)
+                )}>
+                  {rating.toFixed(1)}
+                </div>
+                
+                {/* Minutes */}
+                <div className="w-10 text-right">
+                  <span className="text-xs sm:text-sm text-gray-400 font-mono">
+                    {minutes}'
                   </span>
-                )}
-                {(stats.goals.assists || 0) > 0 && (
-                  <span className="text-blue-400" title="Asist">
-                    🅰️ {stats.goals.assists}
-                  </span>
-                )}
+                </div>
+                
+                {/* Goals */}
+                <div className="w-8 text-right">
+                  {goals > 0 ? (
+                    <span className="text-xs sm:text-sm text-green-400 font-medium">
+                      ⚽ {goals}
+                    </span>
+                  ) : (
+                    <span className="text-xs sm:text-sm text-gray-600">-</span>
+                  )}
+                </div>
+                
+                {/* Assists */}
+                <div className="w-8 text-right">
+                  {assists > 0 ? (
+                    <span className="text-xs sm:text-sm text-blue-400 font-medium">
+                      🅰️ {assists}
+                    </span>
+                  ) : (
+                    <span className="text-xs sm:text-sm text-gray-600">-</span>
+                  )}
+                </div>
               </div>
             </Link>
           );

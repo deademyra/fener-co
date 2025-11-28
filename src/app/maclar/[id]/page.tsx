@@ -254,6 +254,7 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
           homeLineup={fixture.lineups[0]} 
           awayLineup={fixture.lineups[1]}
           events={fixture.events || []}
+          players={fixture.players}
         />
       )}
       

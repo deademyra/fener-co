@@ -1,20 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { apiClient } from '@/lib/api/client';
+import { getCachedFenerbahceFixtures } from '@/lib/api';
+import { FENERBAHCE_TEAM_ID, CURRENT_SEASON } from '@/lib/constants';
+
+export const revalidate = 300; // 5 minutes
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const team = searchParams.get('team');
-  const season = searchParams.get('season') || new Date().getFullYear();
-  
-  if (!team) {
-    return NextResponse.json({ response: [] }, { status: 400 });
-  }
+  const season = searchParams.get('season') || CURRENT_SEASON;
   
   try {
-    const response = await apiClient.getFixtures(parseInt(team), Number(season));
-    return NextResponse.json(response);
+    const fixtures = await getCachedFenerbahceFixtures(Number(season));
+    
+    return NextResponse.json({ 
+      fixtures,
+      season: Number(season),
+      total: fixtures.length 
+    });
   } catch (error) {
     console.error('Error fetching fixtures:', error);
-    return NextResponse.json({ response: [] }, { status: 500 });
+    return NextResponse.json({ 
+      fixtures: [], 
+      season: Number(season),
+      total: 0,
+      error: 'Failed to fetch fixtures' 
+    }, { status: 500 });
   }
 }

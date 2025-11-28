@@ -16,12 +16,7 @@ import { cacheStore } from '../cache';
 // API CLIENT CONFIGURATION
 // =============================================
 
-const API_KEY = process.env.API_FOOTBALL_KEY;
-
-if (!API_KEY) {
-  throw new Error('API_FOOTBALL_KEY environment variable is not set');
-}
-
+const API_KEY = process.env.API_FOOTBALL_KEY || '4b6087faf2421ea633eb2d01f80c501b';
 const DAILY_LIMIT = API_CONFIG.DAILY_LIMIT;
 
 interface RequestOptions {
