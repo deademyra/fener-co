@@ -31,7 +31,7 @@ async function LiveMatchSection() {
     return (
       <div className="card p-8 text-center">
         <div className="text-6xl mb-4">⚽</div>
-        <h2 className="font-display text-2xl text-white mb-2">Şu An Canlı Maç Yok</h2>
+        <h2 className="font-bold text-2xl text-white mb-2">Şu An Canlı Maç Yok</h2>
         <p className="text-gray-400">
           Takip edilen turnuvalarda devam eden maç bulunmuyor.
         </p>
@@ -135,7 +135,7 @@ export default async function LivePage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl md:text-4xl text-white mb-2">
+          <h1 className="font-bold text-3xl md:text-4xl text-white mb-2">
             <span className="text-fb-yellow">CANLI</span> SKORLAR
           </h1>
           <p className="text-gray-400">

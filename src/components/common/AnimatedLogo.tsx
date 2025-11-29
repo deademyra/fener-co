@@ -18,7 +18,7 @@ export function AnimatedLogo({ size = 'md', showAnimation = true }: AnimatedLogo
 
   return (
     <Link href="/" className="flex items-center group">
-      <div className={`flex items-center font-display ${sizeClasses[size]} leading-none`}>
+      <div className={`flex items-center font-bold ${sizeClasses[size]} leading-none`}>
         {/* fener - Sarı */}
         <span className="text-fb-yellow drop-shadow-[0_2px_8px_rgba(252,211,77,0.3)] group-hover:drop-shadow-[0_2px_12px_rgba(252,211,77,0.5)] transition-all duration-300">
           fener

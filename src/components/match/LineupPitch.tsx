@@ -175,9 +175,9 @@ export default function LineupPitch({ homeLineup, awayLineup }: LineupPitchProps
   return (
     <div className="card overflow-hidden">
       {/* Header with tabs */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-800">
+      <div className="flex items-center justify-between p-4 border-b border-white/10">
         <h3 className="section-title text-lg">KADROLAR</h3>
-        <div className="flex gap-1 bg-gray-800 rounded-lg p-1">
+        <div className="flex gap-1 bg-slate-800 rounded-lg p-1">
           <button
             onClick={() => setActiveTab('pitch')}
             className={cn(
@@ -272,7 +272,7 @@ export default function LineupPitch({ homeLineup, awayLineup }: LineupPitchProps
       )}
       
       {/* Substitutes */}
-      <div className="p-4 border-t border-gray-800 bg-gray-900/50">
+      <div className="p-4 border-t border-white/10 bg-gray-900/50">
         <h4 className="text-xs text-gray-500 mb-3">YEDEKLER</h4>
         <div className="grid grid-cols-2 gap-4">
           <SubstitutesList lineup={homeLineup} />
@@ -301,7 +301,7 @@ function LineupList({ lineup }: { lineup: Lineup }) {
           <Link 
             key={i}
             href={ROUTES.PLAYER_DETAIL(item.player.id)}
-            className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-gray-800/50 transition-colors"
+            className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-white/10 transition-colors"
           >
             <span className={cn(
               'w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold',
@@ -328,11 +328,11 @@ function SubstitutesList({ lineup }: { lineup: Lineup }) {
         <Link 
           key={i}
           href={ROUTES.PLAYER_DETAIL(item.player.id)}
-          className="flex items-center gap-2 py-1 px-2 rounded hover:bg-gray-800/50 transition-colors text-gray-400"
+          className="flex items-center gap-2 py-1 px-2 rounded hover:bg-white/10 transition-colors text-gray-400"
         >
           <span className={cn(
             'w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold',
-            isFenerbahce ? 'bg-fb-navy/50 text-fb-yellow/70' : 'bg-gray-800 text-gray-400'
+            isFenerbahce ? 'bg-fb-navy/50 text-fb-yellow/70' : 'bg-slate-800 text-gray-400'
           )}>
             {item.player.number}
           </span>

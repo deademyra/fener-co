@@ -102,7 +102,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PlayerD
             />
           </div>
           <div className="flex-1">
-            <h1 className="font-display text-3xl md:text-4xl text-white mb-2">
+            <h1 className="font-bold text-3xl md:text-4xl text-white mb-2">
               {player.name}
             </h1>
             <p className="text-fb-yellow text-lg mb-4">
@@ -140,7 +140,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PlayerD
                     'px-3 py-1.5 rounded-lg text-sm transition-colors',
                     selectedSeason === season
                       ? 'bg-fb-yellow text-fb-navy font-medium'
-                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                      : 'bg-slate-800 text-gray-400 hover:bg-gray-700'
                   )}
                 >
                   {season}-{(season + 1).toString().slice(-2)}
@@ -155,7 +155,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PlayerD
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {/* Maç */}
         <div className="card p-4 text-center">
-          <p className="text-3xl font-display text-fb-yellow">{totals.games}</p>
+          <p className="text-3xl font-bold text-fb-yellow">{totals.games}</p>
           <p className="text-sm text-gray-400 mb-2">Maç</p>
           <div className="w-full bg-gray-700 rounded-full h-2">
             <div 
@@ -168,7 +168,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PlayerD
         
         {/* Dakika */}
         <div className="card p-4 text-center">
-          <p className="text-3xl font-display text-fb-yellow">{totals.minutes}'</p>
+          <p className="text-3xl font-bold text-fb-yellow">{totals.minutes}'</p>
           <p className="text-sm text-gray-400 mb-2">Dakika</p>
           <div className="w-full bg-gray-700 rounded-full h-2">
             <div 
@@ -181,7 +181,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PlayerD
         
         {/* Gol */}
         <div className="card p-4 text-center">
-          <p className="text-3xl font-display text-fb-yellow">{totals.goals}</p>
+          <p className="text-3xl font-bold text-fb-yellow">{totals.goals}</p>
           <p className="text-sm text-gray-400 mb-2">Gol</p>
           <div className="w-full bg-gray-700 rounded-full h-2">
             <div 
@@ -196,7 +196,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PlayerD
         
         {/* Asist */}
         <div className="card p-4 text-center">
-          <p className="text-3xl font-display text-fb-yellow">{totals.assists}</p>
+          <p className="text-3xl font-bold text-fb-yellow">{totals.assists}</p>
           <p className="text-sm text-gray-400 mb-2">Asist</p>
           <div className="w-full bg-gray-700 rounded-full h-2">
             <div 
@@ -211,7 +211,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PlayerD
         
         {/* Rating */}
         <div className="card p-4 text-center">
-          <p className="text-3xl font-display text-fb-yellow">{avgRating.toFixed(1)}</p>
+          <p className="text-3xl font-bold text-fb-yellow">{avgRating.toFixed(1)}</p>
           <p className="text-sm text-gray-400 mb-2">Rating</p>
           <div className="w-full bg-gray-700 rounded-full h-2">
             <div 
@@ -235,7 +235,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PlayerD
               'px-4 py-2 rounded-lg text-sm transition-colors',
               selectedLeague === 'all' 
                 ? 'bg-fb-yellow text-fb-navy font-medium' 
-                : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                : 'bg-slate-800 text-gray-400 hover:bg-gray-700'
             )}
           >
             Tümü
@@ -248,7 +248,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PlayerD
                 'px-4 py-2 rounded-lg text-sm transition-colors flex items-center gap-2',
                 selectedLeague === league.id.toString()
                   ? 'bg-fb-yellow text-fb-navy font-medium' 
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  : 'bg-slate-800 text-gray-400 hover:bg-gray-700'
               )}
             >
               <Image src={league.logo} alt="" width={16} height={16} />
@@ -265,7 +265,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PlayerD
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-gray-500 border-b border-gray-800">
+                <tr className="text-left text-gray-500 border-b border-white/10">
                   <th className="pb-3">Turnuva</th>
                   <th className="pb-3 text-center">Maç</th>
                   <th className="pb-3 text-center">Gol</th>
@@ -286,7 +286,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PlayerD
                   const shotAccuracy = shotsTotal > 0 ? ((shotsOn / shotsTotal) * 100).toFixed(0) : '-';
                   const duelWinRate = duelsTotal > 0 ? ((duelsWon / duelsTotal) * 100).toFixed(0) : '-';
                   return (
-                    <tr key={idx} className="border-b border-gray-800/50">
+                    <tr key={idx} className="border-b border-white/10/50">
                       <td className="py-3">
                         <div className="flex items-center gap-2">
                           <Image src={st.league.logo} alt="" width={20} height={20} />
@@ -318,7 +318,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PlayerD
                 })}
                 {/* Toplam satırı */}
                 {filteredStats.length > 1 && (
-                  <tr className="font-medium bg-gray-800/30">
+                  <tr className="font-medium bg-white/5">
                     <td className="py-3">Toplam</td>
                     <td className="py-3 text-center">{totals.games}</td>
                     <td className="py-3 text-center text-fb-yellow">{totals.goals}</td>
@@ -346,7 +346,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PlayerD
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-gray-500 border-b border-gray-800">
+              <tr className="text-left text-gray-500 border-b border-white/10">
                 <th className="pb-3">Tarih</th>
                 <th className="pb-3">Maç</th>
                 <th className="pb-3 text-center">Skor</th>
@@ -365,7 +365,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PlayerD
                   : (fixture.goals.away || 0) < (fixture.goals.home || 0);
                 
                 return (
-                  <tr key={fixture.fixture.id} className="border-b border-gray-800/50 hover:bg-gray-800/30">
+                  <tr key={fixture.fixture.id} className="border-b border-white/10/50 hover:bg-white/5">
                     <td className="py-3 text-gray-400">{date}</td>
                     <td className="py-3">
                       <Link 
@@ -377,7 +377,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PlayerD
                         {opponent.name}
                       </Link>
                     </td>
-                    <td className="py-3 text-center font-display">
+                    <td className="py-3 text-center font-bold">
                       <span className={cn(
                         fbWon && 'text-green-500',
                         fbLost && 'text-red-500'

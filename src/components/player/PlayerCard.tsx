@@ -23,11 +23,11 @@ export function PlayerCard({ player, showStats = false }: PlayerCardProps) {
   
   return (
     <Link href={ROUTES.PLAYER_DETAIL(player.id)}>
-      <div className="card card-hover p-4 group">
+      <div className="glass-card-interactive p-4 group">
         <div className="flex items-start gap-4">
           {/* Photo */}
           <div className="relative">
-            <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-800 ring-2 ring-gray-700 group-hover:ring-fb-navy transition-all">
+            <div className="w-16 h-16 rounded-full overflow-hidden bg-slate-800 ring-2 ring-gray-700 group-hover:ring-fb-navy transition-all">
               <Image
                 src={player.photo}
                 alt={player.name}

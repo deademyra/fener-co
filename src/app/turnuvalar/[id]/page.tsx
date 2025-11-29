@@ -134,7 +134,7 @@ export default async function TournamentDetailPage({ params, searchParams }: Tou
           />
         )}
         <div>
-          <h1 className="font-display text-3xl md:text-4xl text-fb-yellow">
+          <h1 className="font-bold text-3xl md:text-4xl text-fb-yellow">
             {leagueName}
           </h1>
           <p className="text-gray-400">
@@ -144,7 +144,7 @@ export default async function TournamentDetailPage({ params, searchParams }: Tou
       </div>
       
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 border-b border-gray-800 overflow-x-auto no-scrollbar">
+      <div className="flex gap-1 mb-6 border-b border-white/10 overflow-x-auto no-scrollbar">
         {tabs.map(t => (
           <Link
             key={t.id}

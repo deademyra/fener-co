@@ -82,12 +82,12 @@ export function PlayerStatsSection({
   
   return (
     <div className="card overflow-hidden">
-      <div className="p-4 border-b border-gray-800">
+      <div className="p-4 border-b border-white/10">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <h3 className="section-title text-lg">FUTBOLCU İSTATİSTİKLERİ</h3>
           
           {/* Filter */}
-          <div className="flex gap-1 bg-gray-800 rounded-lg p-1">
+          <div className="flex gap-1 bg-slate-800 rounded-lg p-1">
             <button
               onClick={() => setFilter('all')}
               className={cn(
@@ -130,9 +130,9 @@ export function PlayerStatsSection({
       {/* Stats Table */}
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-gray-800/50">
+          <thead className="bg-white/10">
             <tr className="text-gray-400 text-xs">
-              <th className="px-2 py-3 text-left sticky left-0 bg-gray-800/50 z-10">Oyuncu</th>
+              <th className="px-2 py-3 text-left sticky left-0 bg-white/10 z-10">Oyuncu</th>
               <th className="px-2 py-3 text-center">Puan</th>
               <th className="px-2 py-3 text-center">Dk</th>
               <th className="px-2 py-3 text-center">G</th>
@@ -165,7 +165,7 @@ export function PlayerStatsSection({
                 <tr 
                   key={player.player.id}
                   className={cn(
-                    'border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors',
+                    'border-b border-white/10/50 hover:bg-white/5 transition-colors',
                     isFBPlayer && 'bg-fb-navy/10'
                   )}
                 >
@@ -300,7 +300,7 @@ export function PlayerStatsSection({
       </div>
       
       {/* Legend */}
-      <div className="p-3 border-t border-gray-800 bg-gray-900/50">
+      <div className="p-3 border-t border-white/10 bg-gray-900/50">
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500">
           <span>G: Gol</span>
           <span>A: Asist</span>

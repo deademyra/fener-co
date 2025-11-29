@@ -159,7 +159,7 @@ function PlayerMarkerWithPhoto({
           'text-[10px] md:text-xs font-bold px-1.5 py-0.5 rounded',
           isFenerbahce 
             ? 'bg-fb-navy text-fb-yellow' 
-            : 'bg-gray-800 text-white'
+            : 'bg-slate-800 text-white'
         )}>
           {player.number}
         </span>
@@ -507,7 +507,7 @@ function SubstitutesBox({
           <Link 
             key={i}
             href={ROUTES.PLAYER_DETAIL(item.player.id)}
-            className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-gray-800/50 transition-colors"
+            className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-white/10 transition-colors"
           >
             {/* Mini Photo */}
             <div className="w-6 h-6 rounded-full overflow-hidden bg-gray-700 flex-shrink-0">
@@ -553,7 +553,7 @@ function SubstitutesBox({
       <div className="grid grid-cols-2 gap-4">
         {/* Home Substitutes */}
         <div>
-          <div className="flex items-center gap-1.5 mb-2 pb-2 border-b border-gray-800">
+          <div className="flex items-center gap-1.5 mb-2 pb-2 border-b border-white/10">
             <Image 
               src={homeLineup.team.logo} 
               alt="" 
@@ -573,7 +573,7 @@ function SubstitutesBox({
         
         {/* Away Substitutes */}
         <div>
-          <div className="flex items-center gap-1.5 mb-2 pb-2 border-b border-gray-800">
+          <div className="flex items-center gap-1.5 mb-2 pb-2 border-b border-white/10">
             <Image 
               src={awayLineup.team.logo} 
               alt="" 
@@ -628,7 +628,7 @@ function SubstitutionsTable({
           key={i} 
           className={cn(
             'flex items-center gap-2 py-2 px-3 rounded-lg',
-            'bg-gray-800/30 border border-gray-800/50'
+            'bg-white/5 border border-white/10/50'
           )}
         >
           {/* Time */}
@@ -670,7 +670,7 @@ function SubstitutionsTable({
       <div className="grid grid-cols-2 gap-4">
         {/* Home Team Substitutions */}
         <div>
-          <div className="flex items-center gap-1.5 mb-2 pb-2 border-b border-gray-800">
+          <div className="flex items-center gap-1.5 mb-2 pb-2 border-b border-white/10">
             <Image 
               src={homeLineup.team.logo} 
               alt="" 
@@ -690,7 +690,7 @@ function SubstitutionsTable({
         
         {/* Away Team Substitutions */}
         <div>
-          <div className="flex items-center gap-1.5 mb-2 pb-2 border-b border-gray-800">
+          <div className="flex items-center gap-1.5 mb-2 pb-2 border-b border-white/10">
             <Image 
               src={awayLineup.team.logo} 
               alt="" 

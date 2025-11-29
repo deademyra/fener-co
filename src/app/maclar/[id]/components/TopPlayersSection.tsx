@@ -77,7 +77,7 @@ export function TopPlayersSection({
       <h3 className="section-title text-lg mb-4">ÖNE ÇIKAN OYUNCULAR</h3>
       
       {/* Table Header - for alignment reference */}
-      <div className="hidden sm:flex items-center gap-2 px-3 pb-2 border-b border-gray-800 mb-2">
+      <div className="hidden sm:flex items-center gap-2 px-3 pb-2 border-b border-white/10 mb-2">
         <div className="flex-1" /> {/* Spacer for player info */}
         <div className="flex items-center justify-end gap-2">
           <span className="text-[10px] text-gray-500 uppercase w-10 text-right">Puan</span>
@@ -102,7 +102,7 @@ export function TopPlayersSection({
               href={ROUTES.PLAYER_DETAIL(player.player.id)}
               className={cn(
                 'flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg transition-all',
-                'hover:bg-gray-800/50',
+                'hover:bg-white/10',
                 index === 0 && 'bg-gradient-to-r from-fb-navy/30 to-transparent border border-fb-navy/30'
               )}
             >

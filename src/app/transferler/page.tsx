@@ -46,7 +46,7 @@ async function TransferList({
   if (filteredTransfers.length === 0) {
     return (
       <div className="card p-8 text-center">
-        <p className="text-gray-500 dark:text-gray-400">
+        <p className="text-gray-500 text-gray-400">
           {direction === 'in' ? 'Gelen transfer bulunamadı' : 'Giden transfer bulunamadı'}
         </p>
       </div>
@@ -69,7 +69,7 @@ async function TransferList({
                 href={ROUTES.PLAYER_DETAIL(t.player.id)}
                 className="flex-1 flex items-center gap-3 hover:text-fb-navy dark:hover:text-fb-yellow transition-colors"
               >
-                <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-sm font-bold text-gray-600 dark:text-gray-400">
+                <div className="w-10 h-10 rounded-full bg-gray-200 bg-slate-800 flex items-center justify-center text-sm font-bold text-gray-600 text-gray-400">
                   {t.player.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
                 </div>
                 <div>
@@ -127,7 +127,7 @@ async function TransferList({
                     ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400' 
                     : transfer.type === 'Free'
                     ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
-                    : 'bg-fb-navy/10 dark:bg-fb-navy/30 text-fb-navy dark:text-fb-yellow'
+                    : 'bg-fb-navy/10 dark:bg-fb-navy/30 text-fb-navy text-fb-yellow'
                   }
                 `}>
                   {transfer.type === 'Loan' ? 'Kiralık' : 
@@ -158,10 +158,10 @@ export default function TransferlerPage({
     <div className="container mx-auto px-4 py-6">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-3xl font-display text-fb-navy dark:text-fb-yellow mb-2">
+        <h1 className="text-3xl font-bold text-fb-navy text-fb-yellow mb-2">
           TRANSFERLER
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-gray-600 text-gray-400">
           Fenerbahçe transfer hareketleri
         </p>
       </div>
@@ -170,7 +170,7 @@ export default function TransferlerPage({
       <div className="flex flex-wrap gap-4 mb-6">
         {/* Sezon Filtresi */}
         <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-600 dark:text-gray-400">Sezon:</label>
+          <label className="text-sm text-gray-600 text-gray-400">Sezon:</label>
           <div className="flex gap-1">
             {seasons.map(s => (
               <Link
@@ -180,7 +180,7 @@ export default function TransferlerPage({
                   px-3 py-1.5 rounded-lg text-sm font-medium transition-colors
                   ${season === s 
                     ? 'bg-fb-navy text-white' 
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    : 'bg-slate-800 text-gray-700 text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                   }
                 `}
               >
@@ -192,7 +192,7 @@ export default function TransferlerPage({
         
         {/* Yön Filtresi */}
         <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-600 dark:text-gray-400">Yön:</label>
+          <label className="text-sm text-gray-600 text-gray-400">Yön:</label>
           <div className="flex gap-1">
             <Link
               href={`/transferler?sezon=${season}&yön=in`}
@@ -200,7 +200,7 @@ export default function TransferlerPage({
                 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors
                 ${direction === 'in' 
                   ? 'bg-green-600 text-white' 
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                  : 'bg-slate-800 text-gray-700 text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                 }
               `}
             >
@@ -212,7 +212,7 @@ export default function TransferlerPage({
                 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors
                 ${direction === 'out' 
                   ? 'bg-red-600 text-white' 
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                  : 'bg-slate-800 text-gray-700 text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                 }
               `}
             >

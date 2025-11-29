@@ -41,16 +41,16 @@ async function TournamentCard({ leagueId, name }: TournamentCardProps) {
           <span className="text-xs text-gray-500">{CURRENT_SEASON}-{CURRENT_SEASON + 1}</span>
         </div>
         
-        <h3 className="font-display text-xl text-white group-hover:text-fb-yellow transition-colors mb-2">
+        <h3 className="font-bold text-xl text-white group-hover:text-fb-yellow transition-colors mb-2">
           {name}
         </h3>
         
         {fbStanding && (
-          <div className="mt-4 pt-4 border-t border-gray-800">
+          <div className="mt-4 pt-4 border-t border-white/10">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-400">Fenerbahçe Sıralaması</span>
               <div className="flex items-center gap-3">
-                <span className="font-display text-2xl text-fb-yellow">
+                <span className="font-bold text-2xl text-fb-yellow">
                   #{fbStanding.rank}
                 </span>
                 <span className="text-sm text-gray-500">
@@ -89,7 +89,7 @@ export default async function TournamentsPage() {
     <div className="container mx-auto px-4 py-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="font-display text-3xl md:text-4xl text-white mb-2">
+        <h1 className="font-bold text-3xl md:text-4xl text-white mb-2">
           <span className="text-fb-yellow">TURNUVALAR</span>
         </h1>
         <p className="text-gray-400">

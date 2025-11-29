@@ -21,7 +21,7 @@ async function CoachSection() {
   return (
     <div className="card p-6 mb-8">
       <div className="flex items-center gap-6">
-        <div className="relative w-24 h-24 rounded-full overflow-hidden bg-gray-800 ring-2 ring-fb-navy">
+        <div className="relative w-24 h-24 rounded-full overflow-hidden bg-slate-800 ring-2 ring-fb-navy">
           <Image
             src={coach.photo}
             alt={coach.name}
@@ -31,7 +31,7 @@ async function CoachSection() {
         </div>
         <div>
           <p className="text-sm text-gray-500 mb-1">TEKNİK DİREKTÖR</p>
-          <h2 className="font-display text-2xl text-fb-yellow">{coach.name}</h2>
+          <h2 className="font-bold text-2xl text-fb-yellow">{coach.name}</h2>
           <div className="flex gap-4 mt-2 text-sm text-gray-400">
             <span>🌍 {coach.nationality}</span>
             <span>🎂 {coach.age} yaş</span>
@@ -61,7 +61,7 @@ export default async function SquadPage() {
     <div className="container mx-auto px-4 py-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="font-display text-3xl md:text-4xl text-white mb-2">
+        <h1 className="font-bold text-3xl md:text-4xl text-white mb-2">
           <span className="text-fb-yellow">FENERBAHÇE</span> KADROSU
         </h1>
         <p className="text-gray-400">

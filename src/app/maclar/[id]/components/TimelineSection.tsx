@@ -79,7 +79,7 @@ export function TimelineSection({ events, homeTeamId, awayTeamId }: TimelineSect
                 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap',
                 isActive
                   ? 'bg-fb-navy text-fb-yellow'
-                  : 'bg-gray-800/50 text-gray-400 hover:bg-gray-800 hover:text-white'
+                  : 'bg-white/10 text-gray-400 hover:bg-slate-800 hover:text-white'
               )}
             >
               <span>{filter.icon}</span>
@@ -121,7 +121,7 @@ export function TimelineSection({ events, homeTeamId, awayTeamId }: TimelineSect
                   className={cn(
                     'timeline-event',
                     isGoal && isFenerbahce && 'bg-fb-navy/20 rounded-lg',
-                    isGoal && !isFenerbahce && 'bg-gray-800/30 rounded-lg',
+                    isGoal && !isFenerbahce && 'bg-white/5 rounded-lg',
                     isRedCard && 'bg-red-900/20 rounded-lg'
                   )}
                 >

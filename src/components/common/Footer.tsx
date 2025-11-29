@@ -5,7 +5,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-gray-800 bg-gray-900/50 mt-auto">
+    <footer className="border-t border-white/10 glass-card-solid mt-auto" style={{ borderRadius: 0 }}>
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
@@ -34,7 +34,7 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-display text-fb-yellow mb-4">SAYFALAR</h4>
+            <h4 className="font-semibold text-fb-yellow mb-4">SAYFALAR</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/maclar" className="text-gray-400 hover:text-white transition-colors">
@@ -66,7 +66,7 @@ export function Footer() {
 
           {/* Info */}
           <div>
-            <h4 className="font-display text-fb-yellow mb-4">BİLGİ</h4>
+            <h4 className="font-semibold text-fb-yellow mb-4">BİLGİ</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <a 
@@ -93,7 +93,7 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="mt-8 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="mt-8 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-gray-500">
             © {currentYear} Fener.co - Tüm hakları saklıdır.
           </p>

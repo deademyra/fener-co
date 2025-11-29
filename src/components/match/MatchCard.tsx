@@ -157,7 +157,7 @@ export function MatchCard({ match, showLeague = true, showDate = true, compact =
             ) : (
               <>
                 <span className={cn(
-                  'font-display text-2xl md:text-3xl',
+                  'font-bold text-2xl md:text-3xl',
                   isLiveMatch && 'text-fb-yellow',
                   !isLiveMatch && 'text-white'
                 )}>
@@ -165,7 +165,7 @@ export function MatchCard({ match, showLeague = true, showDate = true, compact =
                 </span>
                 <span className="text-gray-500">:</span>
                 <span className={cn(
-                  'font-display text-2xl md:text-3xl',
+                  'font-bold text-2xl md:text-3xl',
                   isLiveMatch && 'text-fb-yellow',
                   !isLiveMatch && 'text-white'
                 )}>

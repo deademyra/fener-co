@@ -134,7 +134,7 @@ export function CompactStats({ homeStats, awayStats }: MatchStatisticsProps) {
         const awayValue = awayMap.get(statType)?.value ?? '-';
         
         return (
-          <div key={statType} className="bg-gray-800/50 rounded-lg p-2">
+          <div key={statType} className="bg-white/10 rounded-lg p-2">
             <p className="text-xs text-gray-500 mb-1">{translateStatName(statType)}</p>
             <p className="text-sm">
               <span className="text-white">{homeValue}</span>

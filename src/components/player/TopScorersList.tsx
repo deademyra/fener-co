@@ -62,12 +62,12 @@ export function TopScorersList({
             >
               <div className={cn(
                 'flex items-center gap-3 p-2 rounded-lg transition-colors',
-                'hover:bg-gray-800/50',
+                'hover:bg-white/10',
                 isFenerbahce && 'bg-fb-navy/20'
               )}>
                 {/* Rank */}
                 <span className={cn(
-                  'w-6 text-center font-display text-lg',
+                  'w-6 text-center font-bold text-lg',
                   index === 0 && 'text-fb-gold',
                   index === 1 && 'text-gray-400',
                   index === 2 && 'text-amber-700',
@@ -77,7 +77,7 @@ export function TopScorersList({
                 </span>
                 
                 {/* Player Photo */}
-                <div className="relative w-10 h-10 rounded-full overflow-hidden bg-gray-800 shrink-0">
+                <div className="relative w-10 h-10 rounded-full overflow-hidden bg-slate-800 shrink-0">
                   <Image
                     src={scorer.player.photo}
                     alt={scorer.player.name}
@@ -113,7 +113,7 @@ export function TopScorersList({
                 {/* Value */}
                 <div className="text-right">
                   <span className={cn(
-                    'font-display text-xl',
+                    'font-bold text-xl',
                     isFenerbahce ? 'text-fb-yellow' : 'text-white'
                   )}>
                     {value}

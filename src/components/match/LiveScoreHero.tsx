@@ -64,7 +64,7 @@ export function LiveScoreHero({ matches, liveMatch }: LiveScoreHeroProps) {
         <>
           <button 
             onClick={goToPrevious}
-            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 bg-gray-900/80 hover:bg-gray-800 rounded-full flex items-center justify-center transition-colors"
+            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 glass-card hover:bg-slate-800 rounded-full flex items-center justify-center transition-colors"
             aria-label="Önceki maç"
           >
             <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,7 +73,7 @@ export function LiveScoreHero({ matches, liveMatch }: LiveScoreHeroProps) {
           </button>
           <button 
             onClick={goToNext}
-            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 bg-gray-900/80 hover:bg-gray-800 rounded-full flex items-center justify-center transition-colors"
+            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 glass-card hover:bg-slate-800 rounded-full flex items-center justify-center transition-colors"
             aria-label="Sonraki maç"
           >
             <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,7 +129,7 @@ export function LiveScoreHero({ matches, liveMatch }: LiveScoreHeroProps) {
               <p className="text-sm text-gray-400">{full}</p>
             )}
             {isLiveMatch && currentMatch.fixture.status.elapsed && (
-              <p className="text-lg font-display text-white">
+              <p className="text-lg font-bold text-white">
                 {getStatusText(currentMatch.fixture.status.short, currentMatch.fixture.status.elapsed)}
               </p>
             )}
@@ -153,7 +153,7 @@ export function LiveScoreHero({ matches, liveMatch }: LiveScoreHeroProps) {
                 />
               </div>
               <h3 className={cn(
-                'font-display text-lg md:text-xl lg:text-2xl text-center',
+                'font-bold text-lg md:text-xl lg:text-2xl text-center',
                 isFBHome ? 'text-fb-yellow' : 'text-white'
               )}>
                 {currentMatch.teams.home.name}
@@ -170,14 +170,14 @@ export function LiveScoreHero({ matches, liveMatch }: LiveScoreHeroProps) {
               {isLiveMatch || currentMatch.goals.home !== null ? (
                 <div className="flex items-center gap-2 md:gap-4">
                   <span className={cn(
-                    'font-display text-4xl md:text-5xl lg:text-6xl',
+                    'font-bold text-4xl md:text-5xl lg:text-6xl',
                     isLiveMatch && 'text-fb-yellow'
                   )}>
                     {currentMatch.goals.home ?? 0}
                   </span>
                   <span className="text-2xl md:text-3xl text-gray-500">-</span>
                   <span className={cn(
-                    'font-display text-4xl md:text-5xl lg:text-6xl',
+                    'font-bold text-4xl md:text-5xl lg:text-6xl',
                     isLiveMatch && 'text-fb-yellow'
                   )}>
                     {currentMatch.goals.away ?? 0}
@@ -185,8 +185,8 @@ export function LiveScoreHero({ matches, liveMatch }: LiveScoreHeroProps) {
                 </div>
               ) : (
                 <div className="text-center">
-                  <p className="text-3xl md:text-4xl font-display text-gray-500">VS</p>
-                  <p className="text-xl md:text-2xl font-display text-fb-yellow mt-2">{time}</p>
+                  <p className="text-3xl md:text-4xl font-bold text-gray-500">VS</p>
+                  <p className="text-xl md:text-2xl font-bold text-fb-yellow mt-2">{time}</p>
                 </div>
               )}
               
@@ -213,7 +213,7 @@ export function LiveScoreHero({ matches, liveMatch }: LiveScoreHeroProps) {
                 />
               </div>
               <h3 className={cn(
-                'font-display text-lg md:text-xl lg:text-2xl text-center',
+                'font-bold text-lg md:text-xl lg:text-2xl text-center',
                 currentMatch.teams.away.id === FENERBAHCE_TEAM_ID ? 'text-fb-yellow' : 'text-white'
               )}>
                 {currentMatch.teams.away.name}

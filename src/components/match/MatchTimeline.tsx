@@ -49,7 +49,7 @@ export function MatchTimeline({ events, homeTeamId, awayTeamId }: MatchTimelineP
               className={cn(
                 'timeline-event',
                 isGoal && isFenerbahce && 'bg-fb-navy/20 rounded-lg',
-                isGoal && !isFenerbahce && 'bg-gray-800/30 rounded-lg',
+                isGoal && !isFenerbahce && 'bg-white/5 rounded-lg',
                 isRedCard && 'bg-red-900/20 rounded-lg'
               )}
             >

@@ -123,7 +123,7 @@ function ToggleFilter({ options, value, onChange, label }: ToggleFilterProps) {
   return (
     <div className="flex flex-col gap-1.5">
       <span className="text-xs text-gray-500 uppercase tracking-wider">{label}</span>
-      <div className="flex gap-1 bg-gray-800/50 rounded-lg p-1">
+      <div className="flex gap-1 bg-white/10 rounded-lg p-1">
         {options.map(option => (
           <button
             key={option.id}
@@ -159,7 +159,7 @@ function SelectFilter({ options, value, onChange, label, placeholder = 'Seçiniz
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-fb-yellow/50 focus:border-fb-yellow"
+        className="bg-slate-800 border border-white/15 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-fb-yellow/50 focus:border-fb-yellow"
       >
         {showAllOption && <option value="all">{placeholder}</option>}
         {options.map(option => (
@@ -191,7 +191,7 @@ function LeagueFilter({ leagues, value, onChange }: LeagueFilterProps) {
             'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-colors',
             value === 'all'
               ? 'bg-fb-navy text-fb-yellow'
-              : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+              : 'bg-slate-800 text-gray-400 hover:bg-gray-700'
           )}
         >
           Tümü
@@ -208,7 +208,7 @@ function LeagueFilter({ leagues, value, onChange }: LeagueFilterProps) {
                 'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-colors',
                 isActive
                   ? 'bg-fb-navy text-fb-yellow'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  : 'bg-slate-800 text-gray-400 hover:bg-gray-700'
               )}
             >
               <Image 
@@ -438,7 +438,7 @@ export default function MatchesPage() {
     <div className="container mx-auto px-4 py-6">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-display text-3xl md:text-4xl text-white mb-2">
+        <h1 className="font-bold text-3xl md:text-4xl text-white mb-2">
           <span className="text-fb-yellow">FENERBAHÇE</span> MAÇLARI
         </h1>
         <p className="text-gray-400">
@@ -450,7 +450,7 @@ export default function MatchesPage() {
       </div>
       
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 border-b border-gray-800 overflow-x-auto">
+      <div className="flex gap-1 mb-6 border-b border-white/10 overflow-x-auto">
         {TABS.map(t => (
           <button
             key={t.id}
@@ -541,7 +541,7 @@ export default function MatchesPage() {
         <div className="space-y-8">
           {Object.entries(groupedByMonth).map(([month, monthFixtures]) => (
             <div key={month}>
-              <h3 className="text-lg font-display text-gray-400 mb-4 sticky top-16 bg-gray-950/90 backdrop-blur-sm py-2 z-10">
+              <h3 className="text-lg font-bold text-gray-400 mb-4 sticky top-16 bg-gray-950/90 backdrop-blur-sm py-2 z-10">
                 {month}
                 <span className="text-sm text-gray-600 ml-2">({monthFixtures.length} maç)</span>
               </h3>
@@ -560,25 +560,25 @@ export default function MatchesPage() {
         <div className="mt-8 card p-4">
           <div className="flex flex-wrap gap-6 justify-center text-sm">
             <div className="text-center">
-              <span className="text-2xl font-display text-white">{processedFixtures.length}</span>
+              <span className="text-2xl font-bold text-white">{processedFixtures.length}</span>
               <p className="text-gray-500">Toplam Maç</p>
             </div>
             {(activeTab === 'tum-maclar' || activeTab === 'oynanan') && (
               <>
                 <div className="text-center">
-                  <span className="text-2xl font-display text-green-500">
+                  <span className="text-2xl font-bold text-green-500">
                     {processedFixtures.filter(f => getFenerbahceResult(f) === 'win').length}
                   </span>
                   <p className="text-gray-500">Galibiyet</p>
                 </div>
                 <div className="text-center">
-                  <span className="text-2xl font-display text-amber-500">
+                  <span className="text-2xl font-bold text-amber-500">
                     {processedFixtures.filter(f => getFenerbahceResult(f) === 'draw').length}
                   </span>
                   <p className="text-gray-500">Beraberlik</p>
                 </div>
                 <div className="text-center">
-                  <span className="text-2xl font-display text-red-500">
+                  <span className="text-2xl font-bold text-red-500">
                     {processedFixtures.filter(f => getFenerbahceResult(f) === 'loss').length}
                   </span>
                   <p className="text-gray-500">Mağlubiyet</p>

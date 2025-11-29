@@ -31,7 +31,7 @@ export function MatchDetailTabs({
   
   return (
     <div className="mb-6">
-      <div className="flex gap-1 bg-gray-900/80 border border-gray-800 rounded-xl p-1">
+      <div className="flex gap-1 glass-card border border-white/10 rounded-xl p-1">
         {visibleTabs.map(tab => (
           <Link
             key={tab.id}
@@ -40,7 +40,7 @@ export function MatchDetailTabs({
               'flex-1 px-4 py-3 text-sm font-medium text-center rounded-lg transition-all duration-200',
               activeTab === tab.id
                 ? 'bg-fb-navy text-fb-yellow shadow-md'
-                : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                : 'text-gray-400 hover:text-white hover:bg-white/10'
             )}
           >
             {tab.label}

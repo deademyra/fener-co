@@ -113,7 +113,7 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
               />
             </div>
             <h2 className={cn(
-              'font-display text-xl md:text-2xl text-center',
+              'font-bold text-xl md:text-2xl text-center',
               isFBHome ? 'text-fb-yellow' : 'text-white'
             )}>
               {fixture.teams.home.name}
@@ -128,14 +128,14 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
             {isLiveMatch || isFinishedMatch ? (
               <div className="flex items-center gap-3">
                 <span className={cn(
-                  'font-display text-5xl md:text-6xl',
+                  'font-bold text-5xl md:text-6xl',
                   isLiveMatch && 'text-fb-yellow'
                 )}>
                   {fixture.goals.home ?? 0}
                 </span>
                 <span className="text-3xl text-gray-500">-</span>
                 <span className={cn(
-                  'font-display text-5xl md:text-6xl',
+                  'font-bold text-5xl md:text-6xl',
                   isLiveMatch && 'text-fb-yellow'
                 )}>
                   {fixture.goals.away ?? 0}
@@ -143,8 +143,8 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
               </div>
             ) : (
               <div className="text-center">
-                <p className="text-4xl font-display text-gray-500">VS</p>
-                <p className="text-xl font-display text-fb-yellow mt-2">{time}</p>
+                <p className="text-4xl font-bold text-gray-500">VS</p>
+                <p className="text-xl font-bold text-fb-yellow mt-2">{time}</p>
               </div>
             )}
             
@@ -171,7 +171,7 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
               />
             </div>
             <h2 className={cn(
-              'font-display text-xl md:text-2xl text-center',
+              'font-bold text-xl md:text-2xl text-center',
               isFBAway ? 'text-fb-yellow' : 'text-white'
             )}>
               {fixture.teams.away.name}

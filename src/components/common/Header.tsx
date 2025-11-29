@@ -31,7 +31,7 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 bg-gray-900/95 backdrop-blur-md border-b border-gray-800">
+    <header className="sticky top-0 z-50 glass-card-solid border-b border-white/10" style={{ borderRadius: 0 }}>
       <nav className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Animated Logo */}
@@ -80,7 +80,7 @@ export function Header() {
           {/* Mobile menu button */}
           <div className="flex md:hidden items-center gap-2">
             <button
-              className="p-2 rounded-lg hover:bg-gray-800 text-gray-300"
+              className="p-2 rounded-lg hover:bg-slate-800 text-gray-300"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? (
@@ -98,7 +98,7 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-800 animate-slide-down">
+          <div className="md:hidden py-4 border-t border-white/10 animate-slide-down">
             <div className="flex flex-col gap-1">
               {navigation.map((item) => (
                 <Link

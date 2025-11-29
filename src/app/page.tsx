@@ -104,15 +104,15 @@ function PastMatchCardLarge({ fixture }: { fixture: Fixture }) {
             alt={leagueName}
             width={24}
             height={24}
-            className="object-contain dark:brightness-0 dark:invert"
+            className="object-contain dark-logo-filter"
           />
-          <span className="text-sm text-gray-600 dark:text-gray-300">
+          <span className="text-sm text-gray-600 text-gray-300">
             {leagueName}
             {fixture.league.round && <span className="text-gray-400"> • {fixture.league.round}</span>}
           </span>
         </div>
         <div className="text-right">
-          <span className="text-sm text-gray-900 dark:text-white">{date}</span>
+          <span className="text-sm text-white">{date}</span>
           <span className="text-sm text-fb-yellow font-medium ml-2">{time}</span>
         </div>
       </div>
@@ -124,8 +124,8 @@ function PastMatchCardLarge({ fixture }: { fixture: Fixture }) {
           <span className={cn(
             'text-lg font-semibold text-right',
             fixture.teams.home.id === FENERBAHCE_TEAM_ID 
-              ? 'text-fb-navy dark:text-fb-yellow' 
-              : 'text-gray-900 dark:text-white'
+              ? 'text-fb-yellow' 
+              : 'text-white'
           )}>
             {fixture.teams.home.name}
           </span>
@@ -140,7 +140,7 @@ function PastMatchCardLarge({ fixture }: { fixture: Fixture }) {
         
         {/* Score */}
         <div className="px-6">
-          <span className="text-3xl font-bold text-gray-900 dark:text-white">
+          <span className="text-3xl font-bold text-white">
             {fixture.goals.home} - {fixture.goals.away}
           </span>
         </div>
@@ -157,8 +157,8 @@ function PastMatchCardLarge({ fixture }: { fixture: Fixture }) {
           <span className={cn(
             'text-lg font-semibold',
             fixture.teams.away.id === FENERBAHCE_TEAM_ID 
-              ? 'text-fb-navy dark:text-fb-yellow' 
-              : 'text-gray-900 dark:text-white'
+              ? 'text-fb-yellow' 
+              : 'text-white'
           )}>
             {fixture.teams.away.name}
           </span>
@@ -167,7 +167,7 @@ function PastMatchCardLarge({ fixture }: { fixture: Fixture }) {
       
       {/* Scorers */}
       {(homeGoals.length > 0 || awayGoals.length > 0) && (
-        <div className="flex justify-center gap-8 text-sm text-gray-600 dark:text-gray-400 mb-3">
+        <div className="flex justify-center gap-8 text-sm text-gray-600 text-gray-400 mb-3">
           <div className="text-right">
             {homeGoals.map((g, i) => (
               <span key={i}>⚽ {g.player.name} {g.time.elapsed}' </span>
@@ -183,7 +183,7 @@ function PastMatchCardLarge({ fixture }: { fixture: Fixture }) {
       
       {/* Footer - Venue */}
       {fixture.fixture.venue.name && (
-        <div className="text-center text-sm text-gray-500 dark:text-gray-400">
+        <div className="text-center text-sm text-gray-500 text-gray-400">
           🏟️ {fixture.fixture.venue.name}{fixture.fixture.venue.city && `, ${fixture.fixture.venue.city}`}
         </div>
       )}
@@ -199,7 +199,7 @@ function PastMatchCardSmall({ fixture }: { fixture: Fixture }) {
   return (
     <Link 
       href={ROUTES.MATCH_DETAIL(fixture.fixture.id)} 
-      className="block p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+      className="block p-3 rounded-lg hover:bg-white/5 transition-colors"
     >
       {/* Header - Round bilgisi yok */}
       <div className="flex items-center justify-between mb-2">
@@ -209,13 +209,13 @@ function PastMatchCardSmall({ fixture }: { fixture: Fixture }) {
             alt={leagueName}
             width={16}
             height={16}
-            className="object-contain dark:brightness-0 dark:invert max-h-4"
+            className="object-contain dark-logo-filter max-h-4"
           />
-          <span className="text-xs text-gray-500 dark:text-gray-400">
+          <span className="text-xs text-gray-500 text-gray-400">
             {leagueName}
           </span>
         </div>
-        <span className="text-xs text-gray-500 dark:text-gray-400">{date}, {time}</span>
+        <span className="text-xs text-gray-500 text-gray-400">{date}, {time}</span>
       </div>
       
       {/* Main Section - Fixed width columns for alignment */}
@@ -225,8 +225,8 @@ function PastMatchCardSmall({ fixture }: { fixture: Fixture }) {
           <span className={cn(
             'text-sm font-medium truncate',
             fixture.teams.home.id === FENERBAHCE_TEAM_ID 
-              ? 'text-fb-navy dark:text-fb-yellow' 
-              : 'text-gray-900 dark:text-white'
+              ? 'text-fb-yellow' 
+              : 'text-white'
           )}>
             {fixture.teams.home.name}
           </span>
@@ -241,7 +241,7 @@ function PastMatchCardSmall({ fixture }: { fixture: Fixture }) {
         
         {/* Score - Center aligned, fixed width */}
         <div className="w-16 text-center flex-shrink-0">
-          <span className="text-sm font-bold text-gray-900 dark:text-white">
+          <span className="text-sm font-bold text-white">
             {fixture.goals.home} - {fixture.goals.away}
           </span>
         </div>
@@ -258,8 +258,8 @@ function PastMatchCardSmall({ fixture }: { fixture: Fixture }) {
           <span className={cn(
             'text-sm font-medium truncate',
             fixture.teams.away.id === FENERBAHCE_TEAM_ID 
-              ? 'text-fb-navy dark:text-fb-yellow' 
-              : 'text-gray-900 dark:text-white'
+              ? 'text-fb-yellow' 
+              : 'text-white'
           )}>
             {fixture.teams.away.name}
           </span>
@@ -284,15 +284,15 @@ function FutureMatchCardLarge({ fixture }: { fixture: Fixture }) {
             alt={leagueName}
             width={24}
             height={24}
-            className="object-contain dark:brightness-0 dark:invert"
+            className="object-contain dark-logo-filter"
           />
-          <span className="text-sm text-gray-600 dark:text-gray-300">
+          <span className="text-sm text-gray-600 text-gray-300">
             {leagueName}
             {fixture.league.round && <span className="text-gray-400"> • {fixture.league.round}</span>}
           </span>
         </div>
         <div className="text-right">
-          <span className="text-sm text-gray-900 dark:text-white">{date}</span>
+          <span className="text-sm text-white">{date}</span>
           <span className="text-sm text-fb-yellow font-medium ml-2">{time}</span>
         </div>
       </div>
@@ -304,8 +304,8 @@ function FutureMatchCardLarge({ fixture }: { fixture: Fixture }) {
           <span className={cn(
             'text-lg font-semibold text-right',
             fixture.teams.home.id === FENERBAHCE_TEAM_ID 
-              ? 'text-fb-navy dark:text-fb-yellow' 
-              : 'text-gray-900 dark:text-white'
+              ? 'text-fb-yellow' 
+              : 'text-white'
           )}>
             {fixture.teams.home.name}
           </span>
@@ -320,8 +320,8 @@ function FutureMatchCardLarge({ fixture }: { fixture: Fixture }) {
         
         {/* VS / Time - Saat gri ve küçük */}
         <div className="px-6 text-center">
-          <div className="text-lg text-gray-400 dark:text-gray-500">vs</div>
-          <div className="text-sm text-gray-400 dark:text-gray-500">{time}</div>
+          <div className="text-lg text-gray-400 text-gray-500">vs</div>
+          <div className="text-sm text-gray-400 text-gray-500">{time}</div>
         </div>
         
         {/* Away Team */}
@@ -336,8 +336,8 @@ function FutureMatchCardLarge({ fixture }: { fixture: Fixture }) {
           <span className={cn(
             'text-lg font-semibold',
             fixture.teams.away.id === FENERBAHCE_TEAM_ID 
-              ? 'text-fb-navy dark:text-fb-yellow' 
-              : 'text-gray-900 dark:text-white'
+              ? 'text-fb-yellow' 
+              : 'text-white'
           )}>
             {fixture.teams.away.name}
           </span>
@@ -346,7 +346,7 @@ function FutureMatchCardLarge({ fixture }: { fixture: Fixture }) {
       
       {/* Footer - Venue */}
       {fixture.fixture.venue.name && (
-        <div className="text-center text-sm text-gray-500 dark:text-gray-400">
+        <div className="text-center text-sm text-gray-500 text-gray-400">
           🏟️ {fixture.fixture.venue.name}{fixture.fixture.venue.city && `, ${fixture.fixture.venue.city}`}
         </div>
       )}
@@ -362,7 +362,7 @@ function FutureMatchCardSmall({ fixture }: { fixture: Fixture }) {
   return (
     <Link 
       href={ROUTES.MATCH_DETAIL(fixture.fixture.id)} 
-      className="block p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+      className="block p-3 rounded-lg hover:bg-white/5 transition-colors"
     >
       {/* Header - Round bilgisi yok */}
       <div className="flex items-center justify-between mb-2">
@@ -372,13 +372,13 @@ function FutureMatchCardSmall({ fixture }: { fixture: Fixture }) {
             alt={leagueName}
             width={16}
             height={16}
-            className="object-contain dark:brightness-0 dark:invert max-h-4"
+            className="object-contain dark-logo-filter max-h-4"
           />
-          <span className="text-xs text-gray-500 dark:text-gray-400">
+          <span className="text-xs text-gray-500 text-gray-400">
             {leagueName}
           </span>
         </div>
-        <span className="text-xs text-gray-500 dark:text-gray-400">{date}, {time}</span>
+        <span className="text-xs text-gray-500 text-gray-400">{date}, {time}</span>
       </div>
       
       {/* Main Section - Fixed width columns for alignment */}
@@ -388,8 +388,8 @@ function FutureMatchCardSmall({ fixture }: { fixture: Fixture }) {
           <span className={cn(
             'text-sm font-medium truncate',
             fixture.teams.home.id === FENERBAHCE_TEAM_ID 
-              ? 'text-fb-navy dark:text-fb-yellow' 
-              : 'text-gray-900 dark:text-white'
+              ? 'text-fb-yellow' 
+              : 'text-white'
           )}>
             {fixture.teams.home.name}
           </span>
@@ -404,7 +404,7 @@ function FutureMatchCardSmall({ fixture }: { fixture: Fixture }) {
         
         {/* VS - Center aligned, fixed width */}
         <div className="w-16 text-center flex-shrink-0">
-          <span className="text-sm text-gray-400 dark:text-gray-500">vs</span>
+          <span className="text-sm text-gray-400 text-gray-500">vs</span>
         </div>
         
         {/* Away Team - Left aligned */}
@@ -419,8 +419,8 @@ function FutureMatchCardSmall({ fixture }: { fixture: Fixture }) {
           <span className={cn(
             'text-sm font-medium truncate',
             fixture.teams.away.id === FENERBAHCE_TEAM_ID 
-              ? 'text-fb-navy dark:text-fb-yellow' 
-              : 'text-gray-900 dark:text-white'
+              ? 'text-fb-yellow' 
+              : 'text-white'
           )}>
             {fixture.teams.away.name}
           </span>
@@ -454,16 +454,16 @@ async function LastMatchHero() {
   
   if (!lastMatch) {
     return (
-      <div className="card p-6">
+      <div className="glass-card p-6">
         <p className="text-gray-500 text-center">Son maç bulunamadı</p>
       </div>
     );
   }
   
   return (
-    <div className="card p-6 flex flex-col h-full">
+    <div className="glass-card p-6 flex flex-col h-full">
       {/* Title */}
-      <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">SON MAÇ</h2>
+      <h2 className="text-lg font-bold text-white mb-4">SON MAÇ</h2>
       
       {/* Match Card */}
       <div className="flex-1">
@@ -471,9 +471,9 @@ async function LastMatchHero() {
       </div>
       
       {/* Form - Bottom aligned */}
-      <div className="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
+      <div className="mt-auto pt-4 border-t border-gray-200 dark:border-white/15">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-500 dark:text-gray-400">Son 10 Maç</span>
+          <span className="text-sm text-gray-500 text-gray-400">Son 10 Maç</span>
           <div className="flex gap-1">
             {formData.slice().reverse().map((item, idx) => (
               <FormIcon key={idx} result={item.result} matchInfo={item.tooltip} />
@@ -497,8 +497,8 @@ async function UpcomingMatchesHero() {
   
   if (upcomingMatches.length === 0) {
     return (
-      <div className="card p-6 h-full">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">SIRADAKİ MAÇLAR</h2>
+      <div className="glass-card p-6 h-full">
+        <h2 className="text-lg font-bold text-white mb-4">SIRADAKİ MAÇLAR</h2>
         <p className="text-gray-500 text-center py-8">Yaklaşan maç bulunamadı</p>
       </div>
     );
@@ -534,22 +534,22 @@ async function HeroAltSection() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
       {/* Puan Durumu */}
-      <div className="card p-4 flex flex-col">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">PUAN DURUMU</h3>
+      <div className="glass-card p-4 flex flex-col">
+        <h3 className="text-lg font-bold text-white mb-4">PUAN DURUMU</h3>
         <div className="flex-1">
           <StandingsTableCompact standings={standings} />
         </div>
         <Link 
           href={`/turnuvalar/${TRACKED_LEAGUES.SUPER_LIG}`}
-          className="block text-center text-sm text-fb-navy dark:text-fb-yellow hover:underline mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
+          className="block text-center text-sm text-fb-yellow hover:underline mt-4 pt-4 border-t border-gray-200 dark:border-white/15"
         >
           Tam Tablo →
         </Link>
       </div>
       
       {/* Son Maçlar */}
-      <div className="card p-4 flex flex-col">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">SON MAÇLAR</h3>
+      <div className="glass-card p-4 flex flex-col">
+        <h3 className="text-lg font-bold text-white mb-4">SON MAÇLAR</h3>
         <div className="flex-1 space-y-1">
           {lastMatches.map(fixture => (
             <PastMatchCardSmall key={fixture.fixture.id} fixture={fixture} />
@@ -557,15 +557,15 @@ async function HeroAltSection() {
         </div>
         <Link 
           href="/maclar?tab=sonuclar"
-          className="block text-center text-sm text-fb-navy dark:text-fb-yellow hover:underline mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
+          className="block text-center text-sm text-fb-yellow hover:underline mt-4 pt-4 border-t border-gray-200 dark:border-white/15"
         >
           Tüm Sonuçlar →
         </Link>
       </div>
       
       {/* Gelecek Maçlar */}
-      <div className="card p-4 flex flex-col">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">GELECEK MAÇLAR</h3>
+      <div className="glass-card p-4 flex flex-col">
+        <h3 className="text-lg font-bold text-white mb-4">GELECEK MAÇLAR</h3>
         <div className="flex-1 space-y-1">
           {upcomingMatches.map(fixture => (
             <FutureMatchCardSmall key={fixture.fixture.id} fixture={fixture} />
@@ -573,7 +573,7 @@ async function HeroAltSection() {
         </div>
         <Link 
           href="/maclar?tab=fikstur"
-          className="block text-center text-sm text-fb-navy dark:text-fb-yellow hover:underline mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
+          className="block text-center text-sm text-fb-yellow hover:underline mt-4 pt-4 border-t border-gray-200 dark:border-white/15"
         >
           Tüm Fikstür →
         </Link>
@@ -590,7 +590,7 @@ function StandingsTableCompact({ standings }: { standings: Standing[] }) {
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="text-xs text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
+          <tr className="text-xs text-gray-500 text-gray-400 border-b border-gray-200 dark:border-white/15">
             <th className="text-left py-2 w-6">#</th>
             <th className="text-left py-2">Takım</th>
             <th className="text-center py-2 w-8">O</th>
@@ -604,7 +604,7 @@ function StandingsTableCompact({ standings }: { standings: Standing[] }) {
               <tr 
                 key={team.team.id}
                 className={cn(
-                  'border-b border-gray-100 dark:border-gray-800',
+                  'border-b border-gray-100 dark:border-white/10',
                   isFB && 'bg-fb-navy/5 dark:bg-fb-yellow/10'
                 )}
               >
@@ -628,13 +628,13 @@ function StandingsTableCompact({ standings }: { standings: Standing[] }) {
                     />
                     <span className={cn(
                       'text-sm truncate max-w-[120px]',
-                      isFB && 'font-bold text-fb-navy dark:text-fb-yellow'
+                      isFB && 'font-bold text-fb-yellow'
                     )}>
                       {team.team.name}
                     </span>
                   </div>
                 </td>
-                <td className="text-center py-2 text-gray-500 dark:text-gray-400">
+                <td className="text-center py-2 text-gray-500 text-gray-400">
                   {team.all.played}
                 </td>
                 <td className="text-center py-2 font-bold">
@@ -662,8 +662,8 @@ async function SimpleStatsSection() {
   
   if (!teamStats) {
     return (
-      <div className="card p-6">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">FENERBAHÇE SEZON ÖZETİ</h2>
+      <div className="glass-card p-6">
+        <h2 className="text-lg font-bold text-white mb-4">FENERBAHÇE SEZON ÖZETİ</h2>
         <p className="text-gray-500 text-center py-8">İstatistik verisi yüklenemedi</p>
       </div>
     );
@@ -695,10 +695,10 @@ async function SimpleStatsSection() {
   const maxGoals = Math.max(...Object.values(goalMinutes), 1);
   
   return (
-    <div className="card p-6">
+    <div className="glass-card p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white">FENERBAHÇE SEZON ÖZETİ</h2>
-        <span className="text-sm text-gray-500 dark:text-gray-400">
+        <h2 className="text-lg font-bold text-white">FENERBAHÇE SEZON ÖZETİ</h2>
+        <span className="text-sm text-gray-500 text-gray-400">
           Süper Lig {CURRENT_SEASON}-{String(CURRENT_SEASON + 1).slice(-2)}
         </span>
       </div>
@@ -724,8 +724,8 @@ async function SimpleStatsSection() {
       </div>
       
       {/* Goal Distribution Chart */}
-      <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-        <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-3">Gol Atılan Dakikalar</h3>
+      <div className="border-t border-gray-200 dark:border-white/15 pt-4">
+        <h3 className="text-sm font-medium text-gray-600 text-gray-400 mb-3">Gol Atılan Dakikalar</h3>
         <div className="flex items-end gap-2 h-20">
           {Object.entries(goalMinutes).map(([period, count]) => (
             <div key={period} className="flex-1 flex flex-col items-center">
@@ -733,8 +733,8 @@ async function SimpleStatsSection() {
                 className="w-full bg-fb-navy dark:bg-fb-yellow rounded-t transition-all"
                 style={{ height: `${(count / maxGoals) * 100}%`, minHeight: count > 0 ? '4px' : '0' }}
               />
-              <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">{period}</span>
-              <span className="text-xs font-medium text-gray-900 dark:text-white">{count}</span>
+              <span className="text-xs text-gray-500 text-gray-400 mt-1">{period}</span>
+              <span className="text-xs font-medium text-white">{count}</span>
             </div>
           ))}
         </div>
@@ -762,12 +762,12 @@ function StatBox({
   };
   
   return (
-    <div className="text-center p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-      <div className={cn('text-2xl font-bold', color ? colorClasses[color] : 'text-gray-900 dark:text-white')}>
+    <div className="text-center p-3 bg-gray-50 bg-white/5 rounded-lg">
+      <div className={cn('text-2xl font-bold', color ? colorClasses[color] : 'text-white')}>
         {value}
       </div>
-      <div className="text-xs text-gray-500 dark:text-gray-400">{label}</div>
-      {subLabel && <div className="text-xs text-gray-400 dark:text-gray-500">{subLabel}</div>}
+      <div className="text-xs text-gray-500 text-gray-400">{label}</div>
+      {subLabel && <div className="text-xs text-gray-400 text-gray-500">{subLabel}</div>}
     </div>
   );
 }
@@ -911,7 +911,7 @@ async function PlayerStatsSection() {
     
     if (!squad || squad.length === 0) {
       return (
-        <div className="card p-6">
+        <div className="glass-card p-6">
           <p className="text-gray-500 text-center">Kadro verisi bulunamadı</p>
         </div>
       );
@@ -925,7 +925,7 @@ async function PlayerStatsSection() {
     
     if (allPlayerStats.length === 0) {
       return (
-        <div className="card p-6">
+        <div className="glass-card p-6">
           <p className="text-gray-500 text-center">Oyuncu istatistikleri yüklenemedi</p>
         </div>
       );
@@ -948,7 +948,7 @@ async function PlayerStatsSection() {
   } catch (error) {
     console.error('PlayerStatsSection error:', error);
     return (
-      <div className="card p-6">
+      <div className="glass-card p-6">
         <p className="text-gray-500 text-center">İstatistikler yüklenirken hata oluştu</p>
       </div>
     );
@@ -966,22 +966,22 @@ function PlayerStatList({
 }) {
   if (!players || players.length === 0) {
     return (
-      <div className="card p-4">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">{title}</h3>
+      <div className="glass-card p-4">
+        <h3 className="text-lg font-bold text-white mb-4">{title}</h3>
         <p className="text-sm text-gray-500 text-center py-4">Veri bulunamadı</p>
       </div>
     );
   }
   
   return (
-    <div className="card p-4">
-      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">{title}</h3>
+    <div className="glass-card p-4">
+      <h3 className="text-lg font-bold text-white mb-4">{title}</h3>
       <div className="space-y-3">
         {players.map((p, idx) => (
           <Link 
             key={p.player.id}
             href={ROUTES.PLAYER_DETAIL(p.player.id)}
-            className="flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg p-2 -mx-2 transition-colors"
+            className="flex items-center gap-3 hover:bg-white/5 rounded-lg p-2 -mx-2 transition-colors"
           >
             <span className="w-6 text-center text-sm font-medium text-gray-500">{idx + 1}</span>
             <Image
@@ -992,14 +992,14 @@ function PlayerStatList({
               className="rounded-full object-cover"
             />
             <div className="flex-1 min-w-0">
-              <span className="text-sm font-medium text-gray-900 dark:text-white truncate block">
+              <span className="text-sm font-medium text-white truncate block">
                 {p.player.name}
               </span>
               {statKey === 'games' && (
                 <span className="text-xs text-gray-500">İlk 11: {p.lineups}</span>
               )}
             </div>
-            <span className="text-sm font-bold text-fb-navy dark:text-fb-yellow">
+            <span className="text-sm font-bold text-fb-yellow">
               {p[statKey]}
             </span>
           </Link>
