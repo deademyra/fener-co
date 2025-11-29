@@ -1,7 +1,8 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { getCachedFixtureById } from '@/lib/api';
+import { getCachedFixtureById, getCachedHeadToHead } from '@/lib/api';
+import { getCachedPredictions } from '@/lib/api/predictions';
 import { 
   cn, 
   formatMatchDateTime, 
@@ -18,7 +19,9 @@ import {
   TimelineSection,
   LineupSection,
   PlayerStatsSection,
-  XGDisplay
+  XGDisplay,
+  WinProbabilityBar,
+  HeadToHeadStats,
 } from './components';
 
 interface MatchDetailPageProps {
@@ -52,6 +55,7 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
   const { time, full } = formatMatchDateTime(fixture.fixture.date);
   const isLiveMatch = isLive(fixture.fixture.status.short);
   const isFinishedMatch = isFinished(fixture.fixture.status.short);
+  const isPreMatch = !isLiveMatch && !isFinishedMatch;
   const isFBHome = fixture.teams.home.id === FENERBAHCE_TEAM_ID;
   const isFBAway = fixture.teams.away.id === FENERBAHCE_TEAM_ID;
   const isFenerbahceMatch = isFBHome || isFBAway;
@@ -65,6 +69,21 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
   const awayGoals = fixture.events
     ? formatGoalScorers(fixture.events, fixture.teams.away.id)
     : '';
+  
+  // Fetch predictions and H2H data for pre-match/live matches
+  let predictions = null;
+  let h2hMatches = null;
+  
+  if (isPreMatch || isLiveMatch) {
+    // Fetch in parallel
+    const [predictionsData, h2hData] = await Promise.all([
+      getCachedPredictions(fixture.fixture.id),
+      getCachedHeadToHead(fixture.teams.home.id, fixture.teams.away.id, 10),
+    ]);
+    
+    predictions = predictionsData;
+    h2hMatches = h2hData;
+  }
   
   return (
     <div className="container mx-auto px-4 py-6">
@@ -113,7 +132,7 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
               />
             </div>
             <h2 className={cn(
-              'font-bold text-xl md:text-2xl text-center',
+              'font-display text-xl md:text-2xl text-center',
               isFBHome ? 'text-fb-yellow' : 'text-white'
             )}>
               {fixture.teams.home.name}
@@ -128,14 +147,14 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
             {isLiveMatch || isFinishedMatch ? (
               <div className="flex items-center gap-3">
                 <span className={cn(
-                  'font-bold text-5xl md:text-6xl',
+                  'font-display text-5xl md:text-6xl',
                   isLiveMatch && 'text-fb-yellow'
                 )}>
                   {fixture.goals.home ?? 0}
                 </span>
                 <span className="text-3xl text-gray-500">-</span>
                 <span className={cn(
-                  'font-bold text-5xl md:text-6xl',
+                  'font-display text-5xl md:text-6xl',
                   isLiveMatch && 'text-fb-yellow'
                 )}>
                   {fixture.goals.away ?? 0}
@@ -143,8 +162,8 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
               </div>
             ) : (
               <div className="text-center">
-                <p className="text-4xl font-bold text-gray-500">VS</p>
-                <p className="text-xl font-bold text-fb-yellow mt-2">{time}</p>
+                <p className="text-4xl font-display text-gray-500">VS</p>
+                <p className="text-xl font-display text-fb-yellow mt-2">{time}</p>
               </div>
             )}
             
@@ -171,7 +190,7 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
               />
             </div>
             <h2 className={cn(
-              'font-bold text-xl md:text-2xl text-center',
+              'font-display text-xl md:text-2xl text-center',
               isFBAway ? 'text-fb-yellow' : 'text-white'
             )}>
               {fixture.teams.away.name}
@@ -203,50 +222,141 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
       
       {/* Tab Content */}
       {activeTab === 'macdetay' && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left Column */}
-          <div className="space-y-6" id="left-column">
-            {/* xG Display */}
-            {fixture.statistics && fixture.statistics.length === 2 && (
-              <XGDisplay 
-                homeStats={fixture.statistics[0]}
-                awayStats={fixture.statistics[1]}
-                homeTeam={fixture.teams.home}
-                awayTeam={fixture.teams.away}
-              />
-            )}
-            
-            {/* Match Statistics */}
-            {fixture.statistics && fixture.statistics.length === 2 && (
-              <MatchStatisticsSection
-                homeStats={fixture.statistics[0]}
-                awayStats={fixture.statistics[1]}
-              />
-            )}
-          </div>
+        <>
+          {/* Pre-match / Live: Show Win Probability and H2H */}
+          {(isPreMatch || isLiveMatch) && (
+            <div className="space-y-6 mb-6">
+              {/* Win Probability Bar */}
+              {predictions?.predictions?.percent && (
+                <WinProbabilityBar 
+                  predictions={predictions.predictions}
+                  homeTeam={fixture.teams.home}
+                  awayTeam={fixture.teams.away}
+                />
+              )}
+            </div>
+          )}
           
-          {/* Right Column */}
-          <div className="space-y-6 flex flex-col">
-            {/* Top Players */}
-            {fixture.players && fixture.players.length > 0 && (
-              <TopPlayersSection
-                players={fixture.players}
-                homeTeamId={fixture.teams.home.id}
-                awayTeamId={fixture.teams.away.id}
-                isFenerbahceMatch={isFenerbahceMatch}
-              />
-            )}
-            
-            {/* Timeline */}
-            {fixture.events && fixture.events.length > 0 && (
-              <TimelineSection 
-                events={fixture.events}
-                homeTeamId={fixture.teams.home.id}
-                awayTeamId={fixture.teams.away.id}
-              />
-            )}
-          </div>
-        </div>
+          {/* Finished Match: Show Statistics and Players */}
+          {isFinishedMatch && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left Column */}
+              <div className="space-y-6" id="left-column">
+                {/* xG Display */}
+                {fixture.statistics && fixture.statistics.length === 2 && (
+                  <XGDisplay 
+                    homeStats={fixture.statistics[0]}
+                    awayStats={fixture.statistics[1]}
+                    homeTeam={fixture.teams.home}
+                    awayTeam={fixture.teams.away}
+                  />
+                )}
+                
+                {/* Match Statistics */}
+                {fixture.statistics && fixture.statistics.length === 2 && (
+                  <MatchStatisticsSection
+                    homeStats={fixture.statistics[0]}
+                    awayStats={fixture.statistics[1]}
+                  />
+                )}
+              </div>
+              
+              {/* Right Column */}
+              <div className="space-y-6 flex flex-col">
+                {/* Top Players */}
+                {fixture.players && fixture.players.length > 0 && (
+                  <TopPlayersSection
+                    players={fixture.players}
+                    homeTeamId={fixture.teams.home.id}
+                    awayTeamId={fixture.teams.away.id}
+                    isFenerbahceMatch={isFenerbahceMatch}
+                  />
+                )}
+                
+                {/* Timeline */}
+                {fixture.events && fixture.events.length > 0 && (
+                  <TimelineSection 
+                    events={fixture.events}
+                    homeTeamId={fixture.teams.home.id}
+                    awayTeamId={fixture.teams.away.id}
+                  />
+                )}
+              </div>
+            </div>
+          )}
+          
+          {/* Live Match: Show both predictions and match data */}
+          {isLiveMatch && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left Column */}
+              <div className="space-y-6">
+                {/* xG Display */}
+                {fixture.statistics && fixture.statistics.length === 2 && (
+                  <XGDisplay 
+                    homeStats={fixture.statistics[0]}
+                    awayStats={fixture.statistics[1]}
+                    homeTeam={fixture.teams.home}
+                    awayTeam={fixture.teams.away}
+                  />
+                )}
+                
+                {/* Match Statistics */}
+                {fixture.statistics && fixture.statistics.length === 2 && (
+                  <MatchStatisticsSection
+                    homeStats={fixture.statistics[0]}
+                    awayStats={fixture.statistics[1]}
+                  />
+                )}
+              </div>
+              
+              {/* Right Column */}
+              <div className="space-y-6">
+                {/* Top Players */}
+                {fixture.players && fixture.players.length > 0 && (
+                  <TopPlayersSection
+                    players={fixture.players}
+                    homeTeamId={fixture.teams.home.id}
+                    awayTeamId={fixture.teams.away.id}
+                    isFenerbahceMatch={isFenerbahceMatch}
+                  />
+                )}
+                
+                {/* Timeline */}
+                {fixture.events && fixture.events.length > 0 && (
+                  <TimelineSection 
+                    events={fixture.events}
+                    homeTeamId={fixture.teams.home.id}
+                    awayTeamId={fixture.teams.away.id}
+                  />
+                )}
+              </div>
+            </div>
+          )}
+          
+          {/* Pre-match: Show H2H below Win Probability */}
+          {isPreMatch && (
+            <div className="space-y-6">
+              {/* Head to Head Stats */}
+              {h2hMatches && h2hMatches.length > 0 && (
+                <HeadToHeadStats 
+                  matches={h2hMatches}
+                  homeTeam={fixture.teams.home}
+                  awayTeam={fixture.teams.away}
+                />
+              )}
+              
+              {/* If no predictions or H2H, show a message */}
+              {!predictions?.predictions?.percent && (!h2hMatches || h2hMatches.length === 0) && (
+                <div className="card p-8 text-center">
+                  <p className="text-gray-400">Maç öncesi veriler henüz yüklenmedi</p>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Maç istatistikleri, maç başladıktan sonra görüntülenecektir.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </>
       )}
       
       {activeTab === 'kadro-dizilis' && fixture.lineups && fixture.lineups.length === 2 && (
