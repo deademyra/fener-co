@@ -35,6 +35,7 @@ import {
   CURRENT_SEASON,
   TRACKED_LEAGUE_IDS,
   LIVE_STATUSES,
+  TRANSLATIONS,
 } from '../constants';
 
 // =============================================
@@ -46,11 +47,12 @@ import {
  */
 export async function getCachedFixtures(
   leagueId: number,
-  season: number = CURRENT_SEASON
+  season: number = CURRENT_SEASON,
+  callerPage: string = 'unknown'
 ): Promise<Fixture[]> {
   return getCachedData(
     CacheKeys.fixtures(leagueId, season),
-    () => getFixtures(leagueId, season),
+    () => getFixtures(leagueId, season, callerPage),
     CACHE_TTL.TODAY_FIXTURES
   );
 }
@@ -59,11 +61,12 @@ export async function getCachedFixtures(
  * Cache'li - Fenerbahçe'nin tüm maçlarını getir
  */
 export async function getCachedFenerbahceFixtures(
-  season: number = CURRENT_SEASON
+  season: number = CURRENT_SEASON,
+  callerPage: string = 'unknown'
 ): Promise<Fixture[]> {
   return getCachedData(
     CacheKeys.teamFixtures(FENERBAHCE_TEAM_ID, season),
-    () => getFenerbahceFixtures(season),
+    () => getFenerbahceFixtures(season, callerPage),
     CACHE_TTL.TODAY_FIXTURES
   );
 }
@@ -71,14 +74,17 @@ export async function getCachedFenerbahceFixtures(
 /**
  * Cache'li - Belirli bir maçın detaylarını getir
  */
-export async function getCachedFixtureById(fixtureId: number): Promise<Fixture | null> {
+export async function getCachedFixtureById(
+  fixtureId: number,
+  callerPage: string = 'unknown'
+): Promise<Fixture | null> {
   // Önce cache'den kontrol et
   const cacheKey = CacheKeys.fixtureDetail(fixtureId);
   
   return getCachedData(
     cacheKey,
     async () => {
-      const fixture = await getFixtureById(fixtureId);
+      const fixture = await getFixtureById(fixtureId, callerPage);
       return fixture;
     },
     CACHE_TTL.TODAY_FIXTURES // Dinamik TTL için status'e göre ayarlanabilir
@@ -88,10 +94,12 @@ export async function getCachedFixtureById(fixtureId: number): Promise<Fixture |
 /**
  * Cache'li - Canlı maçları getir (kısa TTL)
  */
-export async function getCachedLiveFixtures(): Promise<Fixture[]> {
+export async function getCachedLiveFixtures(
+  callerPage: string = 'unknown'
+): Promise<Fixture[]> {
   return getCachedData(
     CacheKeys.liveFixtures(),
-    () => getLiveFixtures(),
+    () => getLiveFixtures(callerPage),
     CACHE_TTL.LIVESCORE
   );
 }
@@ -99,10 +107,12 @@ export async function getCachedLiveFixtures(): Promise<Fixture[]> {
 /**
  * Cache'li - Bugünün maçlarını getir
  */
-export async function getCachedTodayFixtures(): Promise<Fixture[]> {
+export async function getCachedTodayFixtures(
+  callerPage: string = 'unknown'
+): Promise<Fixture[]> {
   return getCachedData(
     CacheKeys.todayFixtures(),
-    () => getTodayFixtures(),
+    () => getTodayFixtures(callerPage),
     CACHE_TTL.TODAY_FIXTURES
   );
 }
@@ -112,11 +122,12 @@ export async function getCachedTodayFixtures(): Promise<Fixture[]> {
  */
 export async function getCachedNextFixtures(
   teamId: number = FENERBAHCE_TEAM_ID,
-  count: number = 5
+  count: number = 5,
+  callerPage: string = 'unknown'
 ): Promise<Fixture[]> {
   return getCachedData(
     `next:${teamId}:${count}`,
-    () => getNextFixtures(teamId, count),
+    () => getNextFixtures(teamId, count, callerPage),
     CACHE_TTL.TODAY_FIXTURES
   );
 }
@@ -126,11 +137,12 @@ export async function getCachedNextFixtures(
  */
 export async function getCachedLastFixtures(
   teamId: number = FENERBAHCE_TEAM_ID,
-  count: number = 5
+  count: number = 5,
+  callerPage: string = 'unknown'
 ): Promise<Fixture[]> {
   return getCachedData(
     `last:${teamId}:${count}`,
-    () => getLastFixtures(teamId, count),
+    () => getLastFixtures(teamId, count, callerPage),
     CACHE_TTL.COMPLETED_MATCH
   );
 }
@@ -144,11 +156,12 @@ export async function getCachedLastFixtures(
  */
 export async function getCachedStandings(
   leagueId: number,
-  season: number = CURRENT_SEASON
+  season: number = CURRENT_SEASON,
+  callerPage: string = 'unknown'
 ): Promise<StandingsResponse | null> {
   return getCachedData(
     CacheKeys.standings(leagueId, season),
-    () => getStandings(leagueId, season),
+    () => getStandings(leagueId, season, callerPage),
     CACHE_TTL.STANDINGS
   );
 }
@@ -160,24 +173,28 @@ export async function getCachedStandings(
 /**
  * Cache'li - Takım bilgilerini getir
  */
-export async function getCachedTeam(teamId: number): Promise<TeamWithVenue | null> {
+export async function getCachedTeam(
+  teamId: number,
+  callerPage: string = 'unknown'
+): Promise<TeamWithVenue | null> {
   return getCachedData(
     CacheKeys.team(teamId),
-    () => getTeam(teamId),
+    () => getTeam(teamId, callerPage),
     CACHE_TTL.TEAM_INFO
   );
 }
 
 /**
  * Cache'li - Takım kadrosunu getir
+ * Note: API doesn't support historical squads, always returns current squad
  */
 export async function getCachedSquad(
   teamId: number = FENERBAHCE_TEAM_ID,
-  season: number = CURRENT_SEASON
+  callerPage: string = 'unknown'
 ): Promise<Squad | null> {
   return getCachedData(
-    CacheKeys.teamSquad(teamId, season),
-    () => getSquad(teamId),
+    CacheKeys.teamSquad(teamId, CURRENT_SEASON),
+    () => getSquad(teamId, callerPage),
     CACHE_TTL.SQUAD
   );
 }
@@ -188,11 +205,12 @@ export async function getCachedSquad(
 export async function getCachedTeamStatistics(
   teamId: number = FENERBAHCE_TEAM_ID,
   leagueId: number,
-  season: number = CURRENT_SEASON
+  season: number = CURRENT_SEASON,
+  callerPage: string = 'unknown'
 ): Promise<TeamSeasonStatistics | null> {
   return getCachedData(
     `team:statistics:${teamId}:${leagueId}:${season}`,
-    () => getTeamStatistics(teamId, leagueId, season),
+    () => getTeamStatistics(teamId, leagueId, season, callerPage),
     CACHE_TTL.STANDINGS // 1 saat cache
   );
 }
@@ -206,11 +224,12 @@ export async function getCachedTeamStatistics(
  */
 export async function getCachedPlayer(
   playerId: number,
-  season: number = CURRENT_SEASON
+  season: number = CURRENT_SEASON,
+  callerPage: string = 'unknown'
 ): Promise<PlayerWithStats | null> {
   return getCachedData(
     CacheKeys.playerStatistics(playerId, season),
-    () => getPlayer(playerId, season),
+    () => getPlayer(playerId, season, callerPage),
     CACHE_TTL.PLAYER_INFO
   );
 }
@@ -220,11 +239,12 @@ export async function getCachedPlayer(
  */
 export async function getCachedPlayerStatistics(
   playerId: number,
-  season: number = CURRENT_SEASON
+  season: number = CURRENT_SEASON,
+  callerPage: string = 'unknown'
 ): Promise<PlayerWithStats[]> {
   return getCachedData(
     `player:stats:${playerId}:${season}`,
-    () => getPlayerStatistics(playerId, season),
+    () => getPlayerStatistics(playerId, season, callerPage),
     CACHE_TTL.PLAYER_INFO
   );
 }
@@ -234,11 +254,12 @@ export async function getCachedPlayerStatistics(
  */
 export async function getCachedPlayerStatisticsWithInfo(
   playerId: number,
-  season: number = CURRENT_SEASON
+  season: number = CURRENT_SEASON,
+  callerPage: string = 'unknown'
 ): Promise<{ data: PlayerWithStats[]; fromCache: boolean }> {
   return getCachedDataWithInfo(
     `player:stats:${playerId}:${season}`,
-    () => getPlayerStatistics(playerId, season),
+    () => getPlayerStatistics(playerId, season, callerPage),
     CACHE_TTL.PLAYER_INFO
   );
 }
@@ -252,11 +273,12 @@ export async function getCachedPlayerStatisticsWithInfo(
  */
 export async function getCachedTopScorers(
   leagueId: number,
-  season: number = CURRENT_SEASON
+  season: number = CURRENT_SEASON,
+  callerPage: string = 'unknown'
 ): Promise<TopScorer[]> {
   return getCachedData(
     CacheKeys.topScorers(leagueId, season),
-    () => getTopScorers(leagueId, season),
+    () => getTopScorers(leagueId, season, callerPage),
     CACHE_TTL.TOP_SCORERS
   );
 }
@@ -266,11 +288,12 @@ export async function getCachedTopScorers(
  */
 export async function getCachedTopAssists(
   leagueId: number,
-  season: number = CURRENT_SEASON
+  season: number = CURRENT_SEASON,
+  callerPage: string = 'unknown'
 ): Promise<TopScorer[]> {
   return getCachedData(
     CacheKeys.topAssists(leagueId, season),
-    () => getTopAssists(leagueId, season),
+    () => getTopAssists(leagueId, season, callerPage),
     CACHE_TTL.TOP_SCORERS
   );
 }
@@ -283,11 +306,12 @@ export async function getCachedTopAssists(
  * Cache'li - Teknik direktör bilgilerini getir
  */
 export async function getCachedCoach(
-  teamId: number = FENERBAHCE_TEAM_ID
+  teamId: number = FENERBAHCE_TEAM_ID,
+  callerPage: string = 'unknown'
 ): Promise<Coach | null> {
   return getCachedData(
     CacheKeys.coach(teamId),
-    () => getCoach(teamId),
+    () => getCoach(teamId, callerPage),
     CACHE_TTL.TEAM_INFO
   );
 }
@@ -302,11 +326,12 @@ export async function getCachedCoach(
 export async function getCachedHeadToHead(
   team1: number,
   team2: number,
-  last: number = 10
+  last: number = 10,
+  callerPage: string = 'unknown'
 ): Promise<Fixture[]> {
   return getCachedData(
     CacheKeys.h2h(team1, team2),
-    () => getHeadToHead(team1, team2, last),
+    () => getHeadToHead(team1, team2, last, callerPage),
     CACHE_TTL.HISTORICAL_DATA
   );
 }
@@ -390,6 +415,9 @@ export async function getHomePageData(): Promise<{
  * Fixture'ı MatchCardData'ya dönüştür
  */
 export function fixtureToMatchCard(fixture: Fixture): MatchCardData {
+  // Apply translation for league name if available
+  const leagueName = TRANSLATIONS.leagues[fixture.league.id] || fixture.league.name;
+  
   return {
     id: fixture.fixture.id,
     date: fixture.fixture.date,
@@ -397,7 +425,7 @@ export function fixtureToMatchCard(fixture: Fixture): MatchCardData {
     elapsed: fixture.fixture.status.elapsed,
     league: {
       id: fixture.league.id,
-      name: fixture.league.name,
+      name: leagueName,
       logo: fixture.league.logo,
     },
     homeTeam: {
@@ -423,4 +451,91 @@ export function fixtureToMatchCard(fixture: Fixture): MatchCardData {
  */
 export function isLiveMatch(status: string): boolean {
   return LIVE_STATUSES.includes(status as typeof LIVE_STATUSES[number]);
+}
+
+// =============================================
+// CACHED PLAYER TRANSFER/TROPHY/SIDELINED SERVICES
+// =============================================
+
+import {
+  getPlayerTransfers,
+  getPlayerTrophies,
+  getPlayerSidelined,
+  getPlayerTeams,
+  getFixturePlayerStats,
+  PlayerTransferResponse,
+  PlayerTrophy,
+  PlayerSidelined,
+  PlayerTeamResponse,
+  FixturePlayerStatsResponse,
+} from './client';
+
+/**
+ * Cache'li - Oyuncu transfer geçmişini getir
+ */
+export async function getCachedPlayerTransfers(
+  playerId: number,
+  callerPage: string = 'unknown'
+): Promise<PlayerTransferResponse | null> {
+  return getCachedData(
+    `player:transfers:${playerId}`,
+    () => getPlayerTransfers(playerId, callerPage),
+    CACHE_TTL.PLAYER_INFO
+  );
+}
+
+/**
+ * Cache'li - Oyuncu kupalarını getir
+ */
+export async function getCachedPlayerTrophies(
+  playerId: number,
+  callerPage: string = 'unknown'
+): Promise<PlayerTrophy[]> {
+  return getCachedData(
+    `player:trophies:${playerId}`,
+    () => getPlayerTrophies(playerId, callerPage),
+    CACHE_TTL.PLAYER_INFO
+  );
+}
+
+/**
+ * Cache'li - Oyuncu sakatlık geçmişini getir
+ */
+export async function getCachedPlayerSidelined(
+  playerId: number,
+  callerPage: string = 'unknown'
+): Promise<PlayerSidelined[]> {
+  return getCachedData(
+    `player:sidelined:${playerId}`,
+    () => getPlayerSidelined(playerId, callerPage),
+    CACHE_TTL.PLAYER_INFO
+  );
+}
+
+/**
+ * Cache'li - Oyuncunun oynadığı takımları getir
+ */
+export async function getCachedPlayerTeams(
+  playerId: number,
+  callerPage: string = 'unknown'
+): Promise<PlayerTeamResponse[]> {
+  return getCachedData(
+    `player:teams:${playerId}`,
+    () => getPlayerTeams(playerId, callerPage),
+    CACHE_TTL.PLAYER_INFO
+  );
+}
+
+/**
+ * Cache'li - Maç oyuncu istatistiklerini getir
+ */
+export async function getCachedFixturePlayerStats(
+  fixtureId: number,
+  callerPage: string = 'unknown'
+): Promise<FixturePlayerStatsResponse[]> {
+  return getCachedData(
+    `fixture:players:${fixtureId}`,
+    () => getFixturePlayerStats(fixtureId, callerPage),
+    CACHE_TTL.COMPLETED_MATCH
+  );
 }

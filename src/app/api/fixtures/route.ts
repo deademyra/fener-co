@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCachedFenerbahceFixtures } from '@/lib/api';
-import { FENERBAHCE_TEAM_ID, CURRENT_SEASON } from '@/lib/constants';
+import { CURRENT_SEASON } from '@/lib/constants';
 
 export const revalidate = 300; // 5 minutes
+
+const CALLER_PAGE = '/api/fixtures';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const season = searchParams.get('season') || CURRENT_SEASON;
   
   try {
-    const fixtures = await getCachedFenerbahceFixtures(Number(season));
+    const fixtures = await getCachedFenerbahceFixtures(Number(season), CALLER_PAGE);
     
     return NextResponse.json({ 
       fixtures,

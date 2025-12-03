@@ -123,6 +123,7 @@ export interface PredictionTeam {
   name: string;
   logo: string;
   last_5: {
+    played: number;
     form: string;
     att: string;
     def: string;

@@ -83,9 +83,12 @@ const STAT_COLUMNS: Record<string, StatColumn> = {
     key: 'passAccuracy',
     label: 'Pas%',
     getValue: (stats) => {
+      // API returns accuracy as number of accurate passes, not percentage
       const acc = stats.passes.accuracy;
-      if (acc === null || acc === undefined) return 0;
-      return typeof acc === 'string' ? parseInt(acc) || 0 : acc;
+      const total = stats.passes.total;
+      if (acc === null || acc === undefined || !total || total === 0) return 0;
+      const accurateCount = typeof acc === 'string' ? parseInt(acc) || 0 : acc;
+      return Math.round((accurateCount / total) * 100);
     },
     format: (v) => `${v}%`,
   },

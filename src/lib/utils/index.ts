@@ -13,6 +13,12 @@ import { TRANSLATIONS, LIVE_STATUSES, FINISHED_STATUSES, FENERBAHCE_TEAM_ID } fr
 export function formatDate(dateString: string, formatStr: string = 'd MMMM yyyy'): string {
   try {
     const date = parseISO(dateString);
+    
+    // Handle special format cases
+    if (formatStr === 'short') {
+      return format(date, 'd MMM', { locale: tr });
+    }
+    
     return format(date, formatStr, { locale: tr });
   } catch {
     return dateString;

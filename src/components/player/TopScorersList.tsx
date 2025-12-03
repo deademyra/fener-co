@@ -119,7 +119,7 @@ export function TopScorersList({
                     {value}
                   </span>
                   <p className="text-xs text-gray-500">
-                    {stats?.games.appearances || 0} maç
+                    {stats?.games.appearences || 0} maç
                   </p>
                 </div>
               </div>

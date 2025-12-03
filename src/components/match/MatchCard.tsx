@@ -72,13 +72,15 @@ export function MatchCard({ match, showLeague = true, showDate = true, compact =
             {/* League */}
             {showLeague && (
               <div className="flex items-center gap-2 flex-shrink-0">
-                <Image
-                  src={match.league.logo}
-                  alt={match.league.name}
-                  width={16}
-                  height={16}
-                  className="object-contain dark-logo-filter"
-                />
+                <div className="h-5 w-5 flex items-center justify-center flex-shrink-0">
+                  <Image
+                    src={match.league.logo}
+                    alt={match.league.name}
+                    width={20}
+                    height={20}
+                    className="object-contain dark-logo-filter max-h-5 w-auto"
+                  />
+                </div>
                 <span className="text-xs text-gray-400 truncate max-w-[100px]">
                   {match.league.name}
                 </span>

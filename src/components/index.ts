@@ -2,6 +2,7 @@
 export { Header } from './common/Header';
 export { Footer } from './common/Footer';
 export { AnimatedLogo } from './common/AnimatedLogo';
+export { StatusBar } from './common/StatusBar';
 export { LoadingSpinner, LoadingCard, LoadingPage, LoadingTable } from './common/LoadingSpinner';
 
 // Match components
@@ -15,6 +16,7 @@ export { default as LineupPitch } from './match/LineupPitch';
 // Player components
 export { PlayerCard, PlayerGrid } from './player/PlayerCard';
 export { TopScorersList } from './player/TopScorersList';
+export { default as PlayerHeader } from './player/PlayerHeader';
 
 // Standings components
 export { StandingsTable, FormIndicator } from './standings/StandingsTable';

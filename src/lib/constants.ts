@@ -14,6 +14,9 @@ export const TRACKED_LEAGUES = {
 
 export const TRACKED_LEAGUE_IDS: number[] = Object.values(TRACKED_LEAGUES);
 
+// Friendlies Club league IDs - these should be excluded from "Tümü" filter
+export const FRIENDLIES_LEAGUE_IDS = [667, 551]; // Club Friendlies, Club Friendlies 2
+
 // Dinamik sezon hesaplama - Ağustos'tan itibaren yeni sezon
 const getCurrentSeason = (): number => {
   const now = new Date();
@@ -102,7 +105,10 @@ export const TRANSLATIONS = {
     [TRACKED_LEAGUES.UEFA_CHAMPIONS_LEAGUE]: 'Şampiyonlar Ligi',
     [TRACKED_LEAGUES.UEFA_EUROPA_LEAGUE]: 'UEFA Avrupa Ligi',
     [TRACKED_LEAGUES.UEFA_CONFERENCE_LEAGUE]: 'Konferans Ligi',
-  },
+    10: 'Milli Takım',
+    667: 'Hazırlık Maçı',
+    551: 'Hazırlık Maçı',
+  } as Record<number, string>,
   status: {
     TBD: 'Belirlenmedi',
     NS: 'Başlamadı',
@@ -225,7 +231,8 @@ export const ROUTES = {
   TOURNAMENT_DETAIL: (id: number) => `/turnuvalar/${id}`,
   SQUAD: '/kadro',
   PLAYERS: '/futbolcular',
-  PLAYER_DETAIL: (id: number) => `/futbolcular/${id}`,
+  PLAYER_DETAIL: (id: number) => `/futbolcu/${id}`,
   TRANSFERS: '/transferler',
   STATISTICS: '/istatistik',
+  ADMIN: '/admin',
 } as const;

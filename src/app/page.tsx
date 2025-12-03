@@ -21,6 +21,8 @@ import { formatMatchDateTime, cn, getStatusText, parseForm } from '@/lib/utils';
 
 export const revalidate = 60;
 
+const CALLER_PAGE = 'anasayfa';
+
 // ============================================
 // UTILITY FUNCTIONS
 // ============================================
@@ -97,34 +99,38 @@ function PastMatchCardLarge({ fixture }: { fixture: Fixture }) {
   return (
     <Link href={ROUTES.MATCH_DETAIL(fixture.fixture.id)} className="block">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Image
-            src={fixture.league.logo}
-            alt={leagueName}
-            width={24}
-            height={24}
-            className="object-contain dark-logo-filter"
-          />
-          <span className="text-sm text-gray-600 text-gray-300">
+      <div className="flex items-center justify-between mb-3 md:mb-4 flex-wrap gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="h-5 w-5 md:h-6 md:w-6 flex items-center justify-center flex-shrink-0">
+            <Image
+              src={fixture.league.logo}
+              alt={leagueName}
+              width={24}
+              height={24}
+              className="object-contain dark-logo-filter max-h-5 md:max-h-6 w-auto"
+            />
+          </div>
+          <span className="text-xs md:text-sm text-slate-300 truncate">
             {leagueName}
-            {fixture.league.round && <span className="text-gray-400"> • {fixture.league.round}</span>}
+            <span className="hidden sm:inline text-slate-400">
+              {fixture.league.round && ` • ${fixture.league.round}`}
+            </span>
           </span>
         </div>
-        <div className="text-right">
-          <span className="text-sm text-white">{date}</span>
-          <span className="text-sm text-fb-yellow font-medium ml-2">{time}</span>
+        <div className="text-right flex-shrink-0">
+          <span className="text-xs md:text-sm text-white">{date}</span>
+          <span className="text-xs md:text-sm text-yellow-400 font-medium ml-1 md:ml-2">{time}</span>
         </div>
       </div>
       
       {/* Main Section - Teams & Score */}
-      <div className="flex items-center justify-center gap-4 py-4">
+      <div className="flex items-center justify-center gap-2 sm:gap-4 py-3 md:py-4">
         {/* Home Team */}
-        <div className="flex-1 flex items-center justify-end gap-3">
+        <div className="flex-1 flex items-center justify-end gap-2 sm:gap-3 min-w-0">
           <span className={cn(
-            'text-lg font-semibold text-right',
+            'text-sm sm:text-base md:text-lg font-semibold text-right truncate max-w-[80px] sm:max-w-[120px] md:max-w-none',
             fixture.teams.home.id === FENERBAHCE_TEAM_ID 
-              ? 'text-fb-yellow' 
+              ? 'text-yellow-400' 
               : 'text-white'
           )}>
             {fixture.teams.home.name}
@@ -134,30 +140,30 @@ function PastMatchCardLarge({ fixture }: { fixture: Fixture }) {
             alt={fixture.teams.home.name}
             width={48}
             height={48}
-            className="object-contain"
+            className="object-contain w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0"
           />
         </div>
         
         {/* Score */}
-        <div className="px-6">
-          <span className="text-3xl font-bold text-white">
+        <div className="px-2 sm:px-4 md:px-6 flex-shrink-0">
+          <span className="text-2xl sm:text-3xl font-bold text-white whitespace-nowrap">
             {fixture.goals.home} - {fixture.goals.away}
           </span>
         </div>
         
         {/* Away Team */}
-        <div className="flex-1 flex items-center gap-3">
+        <div className="flex-1 flex items-center gap-2 sm:gap-3 min-w-0">
           <Image
             src={fixture.teams.away.logo}
             alt={fixture.teams.away.name}
             width={48}
             height={48}
-            className="object-contain"
+            className="object-contain w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0"
           />
           <span className={cn(
-            'text-lg font-semibold',
+            'text-sm sm:text-base md:text-lg font-semibold truncate max-w-[80px] sm:max-w-[120px] md:max-w-none',
             fixture.teams.away.id === FENERBAHCE_TEAM_ID 
-              ? 'text-fb-yellow' 
+              ? 'text-yellow-400' 
               : 'text-white'
           )}>
             {fixture.teams.away.name}
@@ -165,15 +171,15 @@ function PastMatchCardLarge({ fixture }: { fixture: Fixture }) {
         </div>
       </div>
       
-      {/* Scorers */}
+      {/* Scorers - Hidden on very small screens */}
       {(homeGoals.length > 0 || awayGoals.length > 0) && (
-        <div className="flex justify-center gap-8 text-sm text-gray-600 text-gray-400 mb-3">
-          <div className="text-right">
+        <div className="hidden sm:flex justify-center gap-4 md:gap-8 text-xs md:text-sm text-slate-400 mb-3">
+          <div className="text-right max-w-[45%] truncate">
             {homeGoals.map((g, i) => (
               <span key={i}>⚽ {g.player.name} {g.time.elapsed}' </span>
             ))}
           </div>
-          <div className="text-left">
+          <div className="text-left max-w-[45%] truncate">
             {awayGoals.map((g, i) => (
               <span key={i}>{g.player.name} {g.time.elapsed}' ⚽ </span>
             ))}
@@ -181,9 +187,9 @@ function PastMatchCardLarge({ fixture }: { fixture: Fixture }) {
         </div>
       )}
       
-      {/* Footer - Venue */}
+      {/* Footer - Venue - Hidden on small screens */}
       {fixture.fixture.venue.name && (
-        <div className="text-center text-sm text-gray-500 text-gray-400">
+        <div className="hidden sm:block text-center text-xs md:text-sm text-slate-400 truncate">
           🏟️ {fixture.fixture.venue.name}{fixture.fixture.venue.city && `, ${fixture.fixture.venue.city}`}
         </div>
       )}
@@ -204,18 +210,20 @@ function PastMatchCardSmall({ fixture }: { fixture: Fixture }) {
       {/* Header - Round bilgisi yok */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <Image
-            src={fixture.league.logo}
-            alt={leagueName}
-            width={16}
-            height={16}
-            className="object-contain dark-logo-filter max-h-4"
-          />
-          <span className="text-xs text-gray-500 text-gray-400">
+          <div className="h-4 w-4 flex items-center justify-center flex-shrink-0">
+            <Image
+              src={fixture.league.logo}
+              alt={leagueName}
+              width={16}
+              height={16}
+              className="object-contain dark-logo-filter max-h-4 w-auto"
+            />
+          </div>
+          <span className="text-xs text-slate-500">
             {leagueName}
           </span>
         </div>
-        <span className="text-xs text-gray-500 text-gray-400">{date}, {time}</span>
+        <span className="text-xs text-slate-500">{date}, {time}</span>
       </div>
       
       {/* Main Section - Fixed width columns for alignment */}
@@ -225,7 +233,7 @@ function PastMatchCardSmall({ fixture }: { fixture: Fixture }) {
           <span className={cn(
             'text-sm font-medium truncate',
             fixture.teams.home.id === FENERBAHCE_TEAM_ID 
-              ? 'text-fb-yellow' 
+              ? 'text-yellow-400' 
               : 'text-white'
           )}>
             {fixture.teams.home.name}
@@ -258,7 +266,7 @@ function PastMatchCardSmall({ fixture }: { fixture: Fixture }) {
           <span className={cn(
             'text-sm font-medium truncate',
             fixture.teams.away.id === FENERBAHCE_TEAM_ID 
-              ? 'text-fb-yellow' 
+              ? 'text-yellow-400' 
               : 'text-white'
           )}>
             {fixture.teams.away.name}
@@ -277,34 +285,38 @@ function FutureMatchCardLarge({ fixture }: { fixture: Fixture }) {
   return (
     <Link href={ROUTES.MATCH_DETAIL(fixture.fixture.id)} className="block">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Image
-            src={fixture.league.logo}
-            alt={leagueName}
-            width={24}
-            height={24}
-            className="object-contain dark-logo-filter"
-          />
-          <span className="text-sm text-gray-600 text-gray-300">
+      <div className="flex items-center justify-between mb-3 md:mb-4 flex-wrap gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="h-5 w-5 md:h-6 md:w-6 flex items-center justify-center flex-shrink-0">
+            <Image
+              src={fixture.league.logo}
+              alt={leagueName}
+              width={24}
+              height={24}
+              className="object-contain dark-logo-filter max-h-5 md:max-h-6 w-auto"
+            />
+          </div>
+          <span className="text-xs md:text-sm text-slate-300 truncate">
             {leagueName}
-            {fixture.league.round && <span className="text-gray-400"> • {fixture.league.round}</span>}
+            <span className="hidden sm:inline text-slate-400">
+              {fixture.league.round && ` • ${fixture.league.round}`}
+            </span>
           </span>
         </div>
-        <div className="text-right">
-          <span className="text-sm text-white">{date}</span>
-          <span className="text-sm text-fb-yellow font-medium ml-2">{time}</span>
+        <div className="text-right flex-shrink-0">
+          <span className="text-xs md:text-sm text-white">{date}</span>
+          <span className="text-xs md:text-sm text-yellow-400 font-medium ml-1 md:ml-2">{time}</span>
         </div>
       </div>
       
       {/* Main Section - Teams & VS */}
-      <div className="flex items-center justify-center gap-4 py-4">
+      <div className="flex items-center justify-center gap-2 sm:gap-4 py-3 md:py-4">
         {/* Home Team */}
-        <div className="flex-1 flex items-center justify-end gap-3">
+        <div className="flex-1 flex items-center justify-end gap-2 sm:gap-3 min-w-0">
           <span className={cn(
-            'text-lg font-semibold text-right',
+            'text-sm sm:text-base md:text-lg font-semibold text-right truncate max-w-[80px] sm:max-w-[120px] md:max-w-none',
             fixture.teams.home.id === FENERBAHCE_TEAM_ID 
-              ? 'text-fb-yellow' 
+              ? 'text-yellow-400' 
               : 'text-white'
           )}>
             {fixture.teams.home.name}
@@ -314,29 +326,29 @@ function FutureMatchCardLarge({ fixture }: { fixture: Fixture }) {
             alt={fixture.teams.home.name}
             width={48}
             height={48}
-            className="object-contain"
+            className="object-contain w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0"
           />
         </div>
         
         {/* VS / Time - Saat gri ve küçük */}
-        <div className="px-6 text-center">
-          <div className="text-lg text-gray-400 text-gray-500">vs</div>
-          <div className="text-sm text-gray-400 text-gray-500">{time}</div>
+        <div className="px-2 sm:px-4 md:px-6 text-center flex-shrink-0">
+          <div className="text-base md:text-lg text-slate-500">vs</div>
+          <div className="text-xs md:text-sm text-slate-500">{time}</div>
         </div>
         
         {/* Away Team */}
-        <div className="flex-1 flex items-center gap-3">
+        <div className="flex-1 flex items-center gap-2 sm:gap-3 min-w-0">
           <Image
             src={fixture.teams.away.logo}
             alt={fixture.teams.away.name}
             width={48}
             height={48}
-            className="object-contain"
+            className="object-contain w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0"
           />
           <span className={cn(
-            'text-lg font-semibold',
+            'text-sm sm:text-base md:text-lg font-semibold truncate max-w-[80px] sm:max-w-[120px] md:max-w-none',
             fixture.teams.away.id === FENERBAHCE_TEAM_ID 
-              ? 'text-fb-yellow' 
+              ? 'text-yellow-400' 
               : 'text-white'
           )}>
             {fixture.teams.away.name}
@@ -344,9 +356,9 @@ function FutureMatchCardLarge({ fixture }: { fixture: Fixture }) {
         </div>
       </div>
       
-      {/* Footer - Venue */}
+      {/* Footer - Venue - Hidden on small screens */}
       {fixture.fixture.venue.name && (
-        <div className="text-center text-sm text-gray-500 text-gray-400">
+        <div className="hidden sm:block text-center text-xs md:text-sm text-slate-400 truncate">
           🏟️ {fixture.fixture.venue.name}{fixture.fixture.venue.city && `, ${fixture.fixture.venue.city}`}
         </div>
       )}
@@ -367,18 +379,20 @@ function FutureMatchCardSmall({ fixture }: { fixture: Fixture }) {
       {/* Header - Round bilgisi yok */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <Image
-            src={fixture.league.logo}
-            alt={leagueName}
-            width={16}
-            height={16}
-            className="object-contain dark-logo-filter max-h-4"
-          />
-          <span className="text-xs text-gray-500 text-gray-400">
+          <div className="h-4 w-4 flex items-center justify-center flex-shrink-0">
+            <Image
+              src={fixture.league.logo}
+              alt={leagueName}
+              width={16}
+              height={16}
+              className="object-contain dark-logo-filter max-h-4 w-auto"
+            />
+          </div>
+          <span className="text-xs text-slate-500">
             {leagueName}
           </span>
         </div>
-        <span className="text-xs text-gray-500 text-gray-400">{date}, {time}</span>
+        <span className="text-xs text-slate-500">{date}, {time}</span>
       </div>
       
       {/* Main Section - Fixed width columns for alignment */}
@@ -388,7 +402,7 @@ function FutureMatchCardSmall({ fixture }: { fixture: Fixture }) {
           <span className={cn(
             'text-sm font-medium truncate',
             fixture.teams.home.id === FENERBAHCE_TEAM_ID 
-              ? 'text-fb-yellow' 
+              ? 'text-yellow-400' 
               : 'text-white'
           )}>
             {fixture.teams.home.name}
@@ -404,7 +418,7 @@ function FutureMatchCardSmall({ fixture }: { fixture: Fixture }) {
         
         {/* VS - Center aligned, fixed width */}
         <div className="w-16 text-center flex-shrink-0">
-          <span className="text-sm text-gray-400 text-gray-500">vs</span>
+          <span className="text-sm text-slate-500">vs</span>
         </div>
         
         {/* Away Team - Left aligned */}
@@ -419,7 +433,7 @@ function FutureMatchCardSmall({ fixture }: { fixture: Fixture }) {
           <span className={cn(
             'text-sm font-medium truncate',
             fixture.teams.away.id === FENERBAHCE_TEAM_ID 
-              ? 'text-fb-yellow' 
+              ? 'text-yellow-400' 
               : 'text-white'
           )}>
             {fixture.teams.away.name}
@@ -436,7 +450,7 @@ function FutureMatchCardSmall({ fixture }: { fixture: Fixture }) {
 
 // Son Maç Hero Card (Anasayfa Sol)
 async function LastMatchHero() {
-  const fixtures = await getCachedFenerbahceFixtures(CURRENT_SEASON);
+  const fixtures = await getCachedFenerbahceFixtures(CURRENT_SEASON, CALLER_PAGE);
   
   // Son 10 tamamlanmış maç
   const completedMatches = fixtures
@@ -454,14 +468,14 @@ async function LastMatchHero() {
   
   if (!lastMatch) {
     return (
-      <div className="glass-card p-6">
-        <p className="text-gray-500 text-center">Son maç bulunamadı</p>
+      <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6">
+        <p className="text-slate-400 text-center">Son maç bulunamadı</p>
       </div>
     );
   }
   
   return (
-    <div className="glass-card p-6 flex flex-col h-full">
+    <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6 flex flex-col h-full">
       {/* Title */}
       <h2 className="text-lg font-bold text-white mb-4">SON MAÇ</h2>
       
@@ -471,9 +485,9 @@ async function LastMatchHero() {
       </div>
       
       {/* Form - Bottom aligned */}
-      <div className="mt-auto pt-4 border-t border-gray-200 dark:border-white/15">
+      <div className="mt-auto pt-4 border-t border-slate-700/50">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-500 text-gray-400">Son 10 Maç</span>
+          <span className="text-sm text-slate-400">Son 10 Maç</span>
           <div className="flex gap-1">
             {formData.slice().reverse().map((item, idx) => (
               <FormIcon key={idx} result={item.result} matchInfo={item.tooltip} />
@@ -487,7 +501,7 @@ async function LastMatchHero() {
 
 // Sıradaki Maçlar Hero Card (Anasayfa Sağ) - Server'dan data alıp Client'a geç
 async function UpcomingMatchesHero() {
-  const fixtures = await getCachedFenerbahceFixtures(CURRENT_SEASON);
+  const fixtures = await getCachedFenerbahceFixtures(CURRENT_SEASON, CALLER_PAGE);
   
   // Gelecek 5 maç
   const upcomingMatches = fixtures
@@ -497,9 +511,9 @@ async function UpcomingMatchesHero() {
   
   if (upcomingMatches.length === 0) {
     return (
-      <div className="glass-card p-6 h-full">
+      <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6 h-full">
         <h2 className="text-lg font-bold text-white mb-4">SIRADAKİ MAÇLAR</h2>
-        <p className="text-gray-500 text-center py-8">Yaklaşan maç bulunamadı</p>
+        <p className="text-slate-400 text-center py-8">Yaklaşan maç bulunamadı</p>
       </div>
     );
   }
@@ -513,8 +527,8 @@ async function UpcomingMatchesHero() {
 
 async function HeroAltSection() {
   const [fixtures, standingsData] = await Promise.all([
-    getCachedFenerbahceFixtures(CURRENT_SEASON),
-    getCachedStandings(TRACKED_LEAGUES.SUPER_LIG)
+    getCachedFenerbahceFixtures(CURRENT_SEASON, CALLER_PAGE),
+    getCachedStandings(TRACKED_LEAGUES.SUPER_LIG, CURRENT_SEASON, CALLER_PAGE)
   ]);
   
   // Son 5 maç
@@ -534,21 +548,21 @@ async function HeroAltSection() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
       {/* Puan Durumu */}
-      <div className="glass-card p-4 flex flex-col">
+      <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4 flex flex-col">
         <h3 className="text-lg font-bold text-white mb-4">PUAN DURUMU</h3>
         <div className="flex-1">
           <StandingsTableCompact standings={standings} />
         </div>
         <Link 
           href={`/turnuvalar/${TRACKED_LEAGUES.SUPER_LIG}`}
-          className="block text-center text-sm text-fb-yellow hover:underline mt-4 pt-4 border-t border-gray-200 dark:border-white/15"
+          className="block text-center text-sm text-yellow-400 hover:text-yellow-300 hover:underline mt-4 pt-4 border-t border-slate-700/50 transition-colors"
         >
           Tam Tablo →
         </Link>
       </div>
       
       {/* Son Maçlar */}
-      <div className="glass-card p-4 flex flex-col">
+      <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4 flex flex-col">
         <h3 className="text-lg font-bold text-white mb-4">SON MAÇLAR</h3>
         <div className="flex-1 space-y-1">
           {lastMatches.map(fixture => (
@@ -557,14 +571,14 @@ async function HeroAltSection() {
         </div>
         <Link 
           href="/maclar?tab=sonuclar"
-          className="block text-center text-sm text-fb-yellow hover:underline mt-4 pt-4 border-t border-gray-200 dark:border-white/15"
+          className="block text-center text-sm text-yellow-400 hover:text-yellow-300 hover:underline mt-4 pt-4 border-t border-slate-700/50 transition-colors"
         >
           Tüm Sonuçlar →
         </Link>
       </div>
       
       {/* Gelecek Maçlar */}
-      <div className="glass-card p-4 flex flex-col">
+      <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4 flex flex-col">
         <h3 className="text-lg font-bold text-white mb-4">GELECEK MAÇLAR</h3>
         <div className="flex-1 space-y-1">
           {upcomingMatches.map(fixture => (
@@ -573,7 +587,7 @@ async function HeroAltSection() {
         </div>
         <Link 
           href="/maclar?tab=fikstur"
-          className="block text-center text-sm text-fb-yellow hover:underline mt-4 pt-4 border-t border-gray-200 dark:border-white/15"
+          className="block text-center text-sm text-yellow-400 hover:text-yellow-300 hover:underline mt-4 pt-4 border-t border-slate-700/50 transition-colors"
         >
           Tüm Fikstür →
         </Link>
@@ -590,7 +604,7 @@ function StandingsTableCompact({ standings }: { standings: Standing[] }) {
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="text-xs text-gray-500 text-gray-400 border-b border-gray-200 dark:border-white/15">
+          <tr className="text-xs text-slate-400 border-b border-slate-700/50">
             <th className="text-left py-2 w-6">#</th>
             <th className="text-left py-2">Takım</th>
             <th className="text-center py-2 w-8">O</th>
@@ -604,15 +618,16 @@ function StandingsTableCompact({ standings }: { standings: Standing[] }) {
               <tr 
                 key={team.team.id}
                 className={cn(
-                  'border-b border-gray-100 dark:border-white/10',
-                  isFB && 'bg-fb-navy/5 dark:bg-fb-yellow/10'
+                  'border-b border-slate-700/30',
+                  isFB && 'bg-yellow-500/10'
                 )}
               >
                 <td className="py-2">
                   <span className={cn(
                     'text-xs font-medium',
-                    team.rank <= 4 && 'text-green-600',
-                    team.rank > standings.length - 3 && 'text-red-600'
+                    team.rank <= 4 && 'text-green-400',
+                    team.rank > standings.length - 3 && 'text-red-400',
+                    team.rank > 4 && team.rank <= standings.length - 3 && 'text-slate-400'
                   )}>
                     {team.rank}
                   </span>
@@ -628,16 +643,16 @@ function StandingsTableCompact({ standings }: { standings: Standing[] }) {
                     />
                     <span className={cn(
                       'text-sm truncate max-w-[120px]',
-                      isFB && 'font-bold text-fb-yellow'
+                      isFB ? 'font-bold text-yellow-400' : 'text-white'
                     )}>
                       {team.team.name}
                     </span>
                   </div>
                 </td>
-                <td className="text-center py-2 text-gray-500 text-gray-400">
+                <td className="text-center py-2 text-slate-400">
                   {team.all.played}
                 </td>
-                <td className="text-center py-2 font-bold">
+                <td className="text-center py-2 font-bold text-white">
                   {team.points}
                 </td>
               </tr>
@@ -653,18 +668,88 @@ function StandingsTableCompact({ standings }: { standings: Standing[] }) {
 // SIMPLE STATS SECTION
 // ============================================
 
+import { getAnnouncement, CONTENT_TYPE_LABELS } from '@/lib/announcement';
+
+// Announcement Placeholder Component
+async function AnnouncementPlaceholder() {
+  // Get announcement content directly from the module
+  const announcementData = getAnnouncement();
+  const announcementHtml = announcementData.html || `
+    <div class="text-center">
+      <div class="text-yellow-400 text-4xl mb-3">📢</div>
+      <h3 class="text-white font-bold text-lg mb-2">İçerik Alanı</h3>
+      <p class="text-slate-400 text-sm">
+        Bu alana reklam, duyuru veya özel içerik ekleyebilirsiniz.
+      </p>
+      <p class="text-slate-500 text-xs mt-3">
+        Admin panelinden düzenleyin
+      </p>
+    </div>
+  `;
+  
+  // Get title based on content type
+  const getTitle = () => {
+    if (!announcementData.showTitle) return null;
+    if (announcementData.contentType === 'ozel' && announcementData.customTitle) {
+      return announcementData.customTitle;
+    }
+    if (announcementData.contentType === 'none') return null;
+    return CONTENT_TYPE_LABELS[announcementData.contentType];
+  };
+  
+  // Get badge text
+  const getBadge = () => {
+    if (!announcementData.showBadge) return null;
+    if (announcementData.contentType === 'none') return null;
+    if (announcementData.contentType === 'ozel' && announcementData.customTitle) {
+      return announcementData.customTitle;
+    }
+    return CONTENT_TYPE_LABELS[announcementData.contentType];
+  };
+  
+  const title = getTitle();
+  const badge = getBadge();
+  
+  return (
+    <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6 h-full flex flex-col">
+      {/* Only show header if title or badge is visible */}
+      {(title || badge) && (
+        <div className="flex items-center justify-between mb-4">
+          {title && <h2 className="text-lg font-bold text-white">{title.toUpperCase()}</h2>}
+          {!title && <div />}
+          {badge && (
+            <span className="text-xs text-slate-500 bg-slate-700/50 px-2 py-1 rounded">
+              {badge}
+            </span>
+          )}
+        </div>
+      )}
+      <div 
+        className="flex-1 flex items-center justify-center"
+        dangerouslySetInnerHTML={{ __html: announcementHtml }}
+      />
+    </div>
+  );
+}
+
 async function SimpleStatsSection() {
   const teamStats = await getCachedTeamStatistics(
     FENERBAHCE_TEAM_ID,
     TRACKED_LEAGUES.SUPER_LIG,
-    CURRENT_SEASON
+    CURRENT_SEASON,
+    CALLER_PAGE
   );
   
   if (!teamStats) {
     return (
-      <div className="glass-card p-6">
-        <h2 className="text-lg font-bold text-white mb-4">FENERBAHÇE SEZON ÖZETİ</h2>
-        <p className="text-gray-500 text-center py-8">İstatistik verisi yüklenemedi</p>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 bg-slate-800/50 rounded-xl border border-slate-700/50 p-6">
+          <h2 className="text-lg font-bold text-white mb-4">FENERBAHÇE SEZON ÖZETİ</h2>
+          <p className="text-slate-400 text-center py-8">İstatistik verisi yüklenemedi</p>
+        </div>
+        <div className="lg:col-span-1">
+          <AnnouncementPlaceholder />
+        </div>
       </div>
     );
   }
@@ -695,49 +780,57 @@ async function SimpleStatsSection() {
   const maxGoals = Math.max(...Object.values(goalMinutes), 1);
   
   return (
-    <div className="glass-card p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-bold text-white">FENERBAHÇE SEZON ÖZETİ</h2>
-        <span className="text-sm text-gray-500 text-gray-400">
-          Süper Lig {CURRENT_SEASON}-{String(CURRENT_SEASON + 1).slice(-2)}
-        </span>
-      </div>
-      
-      {/* Stats Grid */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
-        <StatBox label="Maç" value={totalMatches} />
-        <StatBox label="Galibiyet" value={wins} color="green" />
-        <StatBox label="Beraberlik" value={draws} color="amber" />
-        <StatBox label="Mağlubiyet" value={losses} color="red" />
-      </div>
-      
-      <div className="grid grid-cols-4 gap-4 mb-6">
-        <StatBox label="Atılan Gol" value={goalsFor} subLabel={`ort. ${goals.for.average.total}`} color="green" />
-        <StatBox label="Yenen Gol" value={goalsAgainst} subLabel={`ort. ${goals.against.average.total}`} color="red" />
-        <StatBox label="Clean Sheet" value={clean_sheet.total} color="blue" />
-        <StatBox label="Gol Atamayan" value={failed_to_score.total} />
-      </div>
-      
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        <StatBox label="Sarı Kart" value={yellowCards} color="amber" />
-        <StatBox label="Kırmızı Kart" value={redCards} color="red" />
-      </div>
-      
-      {/* Goal Distribution Chart */}
-      <div className="border-t border-gray-200 dark:border-white/15 pt-4">
-        <h3 className="text-sm font-medium text-gray-600 text-gray-400 mb-3">Gol Atılan Dakikalar</h3>
-        <div className="flex items-end gap-2 h-20">
-          {Object.entries(goalMinutes).map(([period, count]) => (
-            <div key={period} className="flex-1 flex flex-col items-center">
-              <div 
-                className="w-full bg-fb-navy dark:bg-fb-yellow rounded-t transition-all"
-                style={{ height: `${(count / maxGoals) * 100}%`, minHeight: count > 0 ? '4px' : '0' }}
-              />
-              <span className="text-xs text-gray-500 text-gray-400 mt-1">{period}</span>
-              <span className="text-xs font-medium text-white">{count}</span>
-            </div>
-          ))}
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Stats Section - 2/3 width */}
+      <div className="lg:col-span-2 bg-slate-800/50 rounded-xl border border-slate-700/50 p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-bold text-white">FENERBAHÇE SEZON ÖZETİ</h2>
+          <span className="text-sm text-slate-400">
+            Süper Lig {CURRENT_SEASON}-{String(CURRENT_SEASON + 1).slice(-2)}
+          </span>
         </div>
+        
+        {/* Stats Grid */}
+        <div className="grid grid-cols-4 gap-4 mb-6">
+          <StatBox label="Maç" value={totalMatches} />
+          <StatBox label="Galibiyet" value={wins} color="green" />
+          <StatBox label="Beraberlik" value={draws} color="amber" />
+          <StatBox label="Mağlubiyet" value={losses} color="red" />
+        </div>
+        
+        <div className="grid grid-cols-4 gap-4 mb-6">
+          <StatBox label="Atılan Gol" value={goalsFor} subLabel={`ort. ${goals.for.average.total}`} color="green" />
+          <StatBox label="Yenen Gol" value={goalsAgainst} subLabel={`ort. ${goals.against.average.total}`} color="red" />
+          <StatBox label="Clean Sheet" value={clean_sheet.total} color="blue" />
+          <StatBox label="Gol Atamayan" value={failed_to_score.total} />
+        </div>
+        
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <StatBox label="Sarı Kart" value={yellowCards} color="amber" />
+          <StatBox label="Kırmızı Kart" value={redCards} color="red" />
+        </div>
+        
+        {/* Goal Distribution Chart */}
+        <div className="border-t border-slate-700/50 pt-4">
+          <h3 className="text-sm font-medium text-slate-400 mb-3">Gol Atılan Dakikalar</h3>
+          <div className="flex items-end gap-2 h-20">
+            {Object.entries(goalMinutes).map(([period, count]) => (
+              <div key={period} className="flex-1 flex flex-col items-center">
+                <div 
+                  className="w-full bg-yellow-500 rounded-t transition-all"
+                  style={{ height: `${(count / maxGoals) * 100}%`, minHeight: count > 0 ? '4px' : '0' }}
+                />
+                <span className="text-xs text-slate-500 mt-1">{period}</span>
+                <span className="text-xs font-medium text-white">{count}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      
+      {/* Announcement Section - 1/3 width */}
+      <div className="lg:col-span-1">
+        <AnnouncementPlaceholder />
       </div>
     </div>
   );
@@ -755,25 +848,25 @@ function StatBox({
   color?: 'green' | 'red' | 'amber' | 'blue';
 }) {
   const colorClasses = {
-    green: 'text-green-600 dark:text-green-400',
-    red: 'text-red-600 dark:text-red-400',
-    amber: 'text-amber-600 dark:text-amber-400',
-    blue: 'text-blue-600 dark:text-blue-400',
+    green: 'text-green-400',
+    red: 'text-red-400',
+    amber: 'text-amber-400',
+    blue: 'text-blue-400',
   };
   
   return (
-    <div className="text-center p-3 bg-gray-50 bg-white/5 rounded-lg">
+    <div className="text-center p-3 bg-slate-900/50 rounded-lg">
       <div className={cn('text-2xl font-bold', color ? colorClasses[color] : 'text-white')}>
         {value}
       </div>
-      <div className="text-xs text-gray-500 text-gray-400">{label}</div>
-      {subLabel && <div className="text-xs text-gray-400 text-gray-500">{subLabel}</div>}
+      <div className="text-xs text-slate-400">{label}</div>
+      {subLabel && <div className="text-xs text-slate-500">{subLabel}</div>}
     </div>
   );
 }
 
 // ============================================
-// PLAYER STATS SECTION (Rate limit dostu versiyon)
+// PLAYER STATS SECTION (Enhanced - All Squad Players)
 // ============================================
 
 interface PlayerSeasonStat {
@@ -791,8 +884,10 @@ async function fetchPlayerStatsBatched(playerIds: number[], batchSize: number = 
   const results = new Map<number, PlayerSeasonStat | null>();
   const startTime = Date.now();
   
+  if (playerIds.length === 0) return results;
+  
   // Önce ilk oyuncuyu kontrol et - cache'de mi?
-  const firstCheck = await getCachedPlayerStatisticsWithInfo(playerIds[0], CURRENT_SEASON);
+  const firstCheck = await getCachedPlayerStatisticsWithInfo(playerIds[0], CURRENT_SEASON, CALLER_PAGE);
   const allCached = firstCheck.fromCache;
   
   if (allCached) {
@@ -801,7 +896,7 @@ async function fetchPlayerStatsBatched(playerIds: number[], batchSize: number = 
     
     const allPromises = playerIds.map(async (playerId) => {
       try {
-        const stats = await getCachedPlayerStatistics(playerId, CURRENT_SEASON);
+        const stats = await getCachedPlayerStatistics(playerId, CURRENT_SEASON, CALLER_PAGE);
         return processPlayerStats(playerId, stats);
       } catch {
         return { playerId, stat: null };
@@ -825,7 +920,7 @@ async function fetchPlayerStatsBatched(playerIds: number[], batchSize: number = 
       
       const batchPromises = batch.map(async (playerId) => {
         try {
-          const stats = await getCachedPlayerStatistics(playerId, CURRENT_SEASON);
+          const stats = await getCachedPlayerStatistics(playerId, CURRENT_SEASON, CALLER_PAGE);
           return processPlayerStats(playerId, stats);
         } catch {
           return { playerId, stat: null };
@@ -839,7 +934,7 @@ async function fetchPlayerStatsBatched(playerIds: number[], batchSize: number = 
       
       // Son batch değilse, rate limit için bekle
       if (i + batchSize < playerIds.length) {
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 1500));
       }
     }
   }
@@ -854,11 +949,13 @@ async function fetchPlayerStatsBatched(playerIds: number[], batchSize: number = 
 function processPlayerStats(playerId: number, stats: PlayerWithStats[] | null): { playerId: number; stat: PlayerSeasonStat | null } {
   if (!stats || stats.length === 0) return { playerId, stat: null };
   
-  // Sadece Fenerbahçe ve resmi turnuva istatistiklerini al
+  // Sadece Fenerbahçe ve resmi turnuva istatistiklerini al (milli takım ve hazırlık hariç)
+  const officialLeagueIds = [203, 206, 2, 3, 848]; // Süper Lig, Türkiye Kupası, CL, EL, ECL
+  
   const fbStats = stats.filter(s => 
     s.statistics.some(st => 
       st.team.id === FENERBAHCE_TEAM_ID && 
-      [203, 206, 2, 3, 848].includes(st.league.id)
+      officialLeagueIds.includes(st.league.id)
     )
   );
   
@@ -874,8 +971,8 @@ function processPlayerStats(playerId: number, stats: PlayerWithStats[] | null): 
   
   fbStats.forEach(ps => {
     ps.statistics.forEach(st => {
-      if (st.team.id === FENERBAHCE_TEAM_ID && [203, 206, 2, 3, 848].includes(st.league.id)) {
-        totalGames += st.games.appearances || 0;
+      if (st.team.id === FENERBAHCE_TEAM_ID && officialLeagueIds.includes(st.league.id)) {
+        totalGames += st.games.appearences || 0;
         totalLineups += st.games.lineups || 0;
         totalMinutes += st.games.minutes || 0;
         totalGoals += st.goals.total || 0;
@@ -904,38 +1001,51 @@ function processPlayerStats(playerId: number, stats: PlayerWithStats[] | null): 
 
 async function PlayerStatsSection() {
   try {
-    const squadData = await getCachedSquad(FENERBAHCE_TEAM_ID, CURRENT_SEASON);
+    const squadData = await getCachedSquad(FENERBAHCE_TEAM_ID, CALLER_PAGE);
     
     // Squad API'den gelen veri { team: {...}, players: [...] } formatında
     const squad = squadData?.players || [];
     
     if (!squad || squad.length === 0) {
       return (
-        <div className="glass-card p-6">
-          <p className="text-gray-500 text-center">Kadro verisi bulunamadı</p>
+        <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6">
+          <p className="text-slate-400 text-center">Kadro verisi bulunamadı</p>
         </div>
       );
     }
     
-    // Sadece ilk 20 oyuncu için istatistik çek (rate limit dostu)
-    const playerIds = squad.slice(0, 20).map(p => p.id);
-    const statsMap = await fetchPlayerStatsBatched(playerIds, 5);
+    // TÜM oyuncular için istatistik çek (daha büyük batch size ile)
+    const playerIds = squad.map(p => p.id);
+    const statsMap = await fetchPlayerStatsBatched(playerIds, 8);
     
     const allPlayerStats = Array.from(statsMap.values()).filter(Boolean) as PlayerSeasonStat[];
     
     if (allPlayerStats.length === 0) {
       return (
-        <div className="glass-card p-6">
-          <p className="text-gray-500 text-center">Oyuncu istatistikleri yüklenemedi</p>
+        <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6">
+          <p className="text-slate-400 text-center">Oyuncu istatistikleri yüklenemedi</p>
         </div>
       );
     }
     
-    // Sıralamalar
+    // Sıralamalar - Golcüler ve asistçiler için 0'dan büyük olanları filtrele
     const byGames = [...allPlayerStats].sort((a, b) => b.games - a.games).slice(0, 5);
     const byMinutes = [...allPlayerStats].sort((a, b) => b.minutes - a.minutes).slice(0, 5);
-    const byGoals = [...allPlayerStats].filter(p => p.goals > 0).sort((a, b) => b.goals - a.goals).slice(0, 5);
-    const byAssists = [...allPlayerStats].filter(p => p.assists > 0).sort((a, b) => b.assists - a.assists).slice(0, 5);
+    const byGoals = [...allPlayerStats]
+      .filter(p => p.goals > 0)
+      .sort((a, b) => {
+        // Önce gol sayısına göre, eşitse dakikaya göre sırala
+        if (b.goals !== a.goals) return b.goals - a.goals;
+        return a.minutes - b.minutes; // Daha az dakikada atan üstte
+      })
+      .slice(0, 5);
+    const byAssists = [...allPlayerStats]
+      .filter(p => p.assists > 0)
+      .sort((a, b) => {
+        if (b.assists !== a.assists) return b.assists - a.assists;
+        return a.minutes - b.minutes;
+      })
+      .slice(0, 5);
     
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -948,8 +1058,8 @@ async function PlayerStatsSection() {
   } catch (error) {
     console.error('PlayerStatsSection error:', error);
     return (
-      <div className="glass-card p-6">
-        <p className="text-gray-500 text-center">İstatistikler yüklenirken hata oluştu</p>
+      <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6">
+        <p className="text-slate-400 text-center">İstatistikler yüklenirken hata oluştu</p>
       </div>
     );
   }
@@ -966,40 +1076,54 @@ function PlayerStatList({
 }) {
   if (!players || players.length === 0) {
     return (
-      <div className="glass-card p-4">
+      <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
         <h3 className="text-lg font-bold text-white mb-4">{title}</h3>
-        <p className="text-sm text-gray-500 text-center py-4">Veri bulunamadı</p>
+        <p className="text-sm text-slate-500 text-center py-4">Veri bulunamadı</p>
       </div>
     );
   }
   
   return (
-    <div className="glass-card p-4">
+    <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
       <h3 className="text-lg font-bold text-white mb-4">{title}</h3>
       <div className="space-y-3">
         {players.map((p, idx) => (
           <Link 
             key={p.player.id}
             href={ROUTES.PLAYER_DETAIL(p.player.id)}
-            className="flex items-center gap-3 hover:bg-white/5 rounded-lg p-2 -mx-2 transition-colors"
+            className="flex items-center gap-3 hover:bg-white/5 rounded-lg p-2 -mx-2 transition-colors group"
           >
-            <span className="w-6 text-center text-sm font-medium text-gray-500">{idx + 1}</span>
+            <span className={cn(
+              'w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold',
+              idx === 0 && 'bg-yellow-500/20 text-yellow-400',
+              idx === 1 && 'bg-slate-500/20 text-slate-300',
+              idx === 2 && 'bg-amber-700/20 text-amber-600',
+              idx > 2 && 'bg-slate-700/50 text-slate-400'
+            )}>
+              {idx + 1}
+            </span>
             <Image
               src={p.player.photo}
               alt={p.player.name}
               width={36}
               height={36}
-              className="rounded-full object-cover"
+              className="rounded-full object-cover ring-2 ring-slate-600 group-hover:ring-yellow-500/50 transition-all"
             />
             <div className="flex-1 min-w-0">
-              <span className="text-sm font-medium text-white truncate block">
+              <span className="text-sm font-medium text-white truncate block group-hover:text-yellow-400 transition-colors">
                 {p.player.name}
               </span>
               {statKey === 'games' && (
-                <span className="text-xs text-gray-500">İlk 11: {p.lineups}</span>
+                <span className="text-xs text-slate-500">İlk 11: {p.lineups}</span>
+              )}
+              {statKey === 'minutes' && (
+                <span className="text-xs text-slate-500">{p.games} maç</span>
+              )}
+              {(statKey === 'goals' || statKey === 'assists') && (
+                <span className="text-xs text-slate-500">{p.minutes} dk</span>
               )}
             </div>
-            <span className="text-sm font-bold text-fb-yellow">
+            <span className="text-lg font-bold text-yellow-400">
               {p[statKey]}
             </span>
           </Link>
@@ -1015,31 +1139,33 @@ function PlayerStatList({
 
 export default function HomePage() {
   return (
-    <div className="container mx-auto px-4 py-6 space-y-8">
-      {/* Hero Section - 2 Columns, Equal Height */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-        <Suspense fallback={<LoadingCard />}>
-          <LastMatchHero />
+    <main className="min-h-screen">
+      <div className="container mx-auto px-4 py-6 space-y-8">
+        {/* Hero Section - 2 Columns, Equal Height */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+          <Suspense fallback={<LoadingCard />}>
+            <LastMatchHero />
+          </Suspense>
+          <Suspense fallback={<LoadingCard />}>
+            <UpcomingMatchesHero />
+          </Suspense>
+        </div>
+        
+        {/* Hero Alt Section - 3 Columns, Equal Height */}
+        <Suspense fallback={<LoadingTable rows={5} />}>
+          <HeroAltSection />
         </Suspense>
+        
+        {/* Simple Stats */}
         <Suspense fallback={<LoadingCard />}>
-          <UpcomingMatchesHero />
+          <SimpleStatsSection />
+        </Suspense>
+        
+        {/* Player Stats - 2x2 Grid */}
+        <Suspense fallback={<LoadingTable rows={5} />}>
+          <PlayerStatsSection />
         </Suspense>
       </div>
-      
-      {/* Hero Alt Section - 3 Columns, Equal Height */}
-      <Suspense fallback={<LoadingTable rows={5} />}>
-        <HeroAltSection />
-      </Suspense>
-      
-      {/* Simple Stats */}
-      <Suspense fallback={<LoadingCard />}>
-        <SimpleStatsSection />
-      </Suspense>
-      
-      {/* Player Stats - 2x2 Grid */}
-      <Suspense fallback={<LoadingTable rows={5} />}>
-        <PlayerStatsSection />
-      </Suspense>
-    </div>
+    </main>
   );
 }

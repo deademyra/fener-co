@@ -76,24 +76,18 @@ export function StandingsTable({ standings, leagueId, compact = false, maxRows }
                     </span>
                   </div>
                 </td>
-                <td className="text-center text-gray-400">{team.all.played}</td>
+                <td className="text-center">{team.all.played}</td>
                 {!compact && (
                   <>
                     <td className="text-center text-green-400">{team.all.win}</td>
                     <td className="text-center text-gray-400">{team.all.draw}</td>
                     <td className="text-center text-red-400">{team.all.lose}</td>
-                    <td className="text-center">
-                      <span className="text-green-400">{team.all.goals.for}</span>
-                      <span className="text-gray-600">/</span>
-                      <span className="text-red-400">{team.all.goals.against}</span>
+                    <td className="text-center text-gray-400">
+                      {team.all.goals.for}/{team.all.goals.against}
                     </td>
                   </>
                 )}
-                <td className={cn(
-                  'text-center font-medium',
-                  team.goalsDiff > 0 && 'text-green-400',
-                  team.goalsDiff < 0 && 'text-red-400'
-                )}>
+                <td className="text-center">
                   {team.goalsDiff > 0 ? '+' : ''}{team.goalsDiff}
                 </td>
                 <td className="text-center">
@@ -107,7 +101,8 @@ export function StandingsTable({ standings, leagueId, compact = false, maxRows }
                 {!compact && (
                   <td>
                     <div className="flex gap-1">
-                      {form.slice(-5).map((result, i) => (
+                      {/* En eskiden en yeniye sıralama için .reverse() eklendi */}
+                      {form.slice(-5).reverse().map((result, i) => (
                         <span
                           key={i}
                           className={cn(
@@ -147,7 +142,8 @@ export function FormIndicator({ form }: { form: string | null }) {
   
   return (
     <div className="flex gap-1">
-      {formArray.slice(-5).map((result, i) => (
+      {/* En eskiden en yeniye sıralama için .reverse() eklendi */}
+      {formArray.slice(-5).reverse().map((result, i) => (
         <span
           key={i}
           className={cn(

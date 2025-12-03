@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FixtureList, LoadingSpinner } from '@/components';
 import { cn, formatDate } from '@/lib/utils';
 import { Fixture } from '@/types';
-import { FENERBAHCE_TEAM_ID, TRANSLATIONS } from '@/lib/constants';
+import { FENERBAHCE_TEAM_ID, TRANSLATIONS, FRIENDLIES_LEAGUE_IDS } from '@/lib/constants';
 
 // =============================================
 // CONSTANTS
@@ -123,16 +123,16 @@ function ToggleFilter({ options, value, onChange, label }: ToggleFilterProps) {
   return (
     <div className="flex flex-col gap-1.5">
       <span className="text-xs text-gray-500 uppercase tracking-wider">{label}</span>
-      <div className="flex gap-1 bg-white/10 rounded-lg p-1">
+      <div className="flex gap-0.5 sm:gap-1 bg-slate-800/50 rounded-lg p-0.5 sm:p-1 border border-slate-700/50 overflow-x-auto">
         {options.map(option => (
           <button
             key={option.id}
             onClick={() => onChange(option.id)}
             className={cn(
-              'px-3 py-1.5 text-sm rounded-md transition-all',
+              'px-2 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-md transition-all whitespace-nowrap min-h-[40px] flex items-center justify-center',
               value === option.id
-                ? 'bg-fb-navy text-fb-yellow font-medium'
-                : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                ? 'bg-yellow-500 text-slate-900 font-medium'
+                : 'text-slate-400 hover:text-white hover:bg-slate-700/50 active:bg-slate-600/50'
             )}
           >
             {option.label}
@@ -153,21 +153,79 @@ interface SelectFilterProps {
 }
 
 function SelectFilter({ options, value, onChange, label, placeholder = 'Seçiniz', showAllOption = true }: SelectFilterProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+  
+  // Get display label for current value
+  const displayLabel = value === 'all' 
+    ? placeholder 
+    : options.find(o => o.id === value)?.label || placeholder;
+  
   return (
     <div className="flex flex-col gap-1.5">
       <span className="text-xs text-gray-500 uppercase tracking-wider">{label}</span>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="bg-slate-800 border border-white/15 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-fb-yellow/50 focus:border-fb-yellow"
-      >
-        {showAllOption && <option value="all">{placeholder}</option>}
-        {options.map(option => (
-          <option key={option.id} value={option.id}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+      <div className="relative" ref={dropdownRef}>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-slate-800/80 hover:bg-slate-700/80 
+                     border border-slate-600/50 rounded-lg text-white transition-all text-sm
+                     focus:outline-none focus:ring-2 focus:ring-yellow-500/50"
+        >
+          <span className={value === 'all' ? 'text-slate-400' : 'text-white font-medium'}>
+            {displayLabel}
+          </span>
+          <svg 
+            className={cn('w-4 h-4 text-slate-400 transition-transform', isOpen && 'rotate-180')} 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        
+        {isOpen && (
+          <div className="absolute z-50 w-full mt-2 bg-slate-800 border border-slate-600/50 
+                          rounded-lg shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="max-h-64 overflow-y-auto">
+              {showAllOption && (
+                <button
+                  onClick={() => { onChange('all'); setIsOpen(false); }}
+                  className={cn(
+                    'w-full px-4 py-2.5 text-left hover:bg-slate-700/50 transition-colors text-sm',
+                    value === 'all' ? 'bg-yellow-500/10 text-yellow-400 font-semibold' : 'text-white'
+                  )}
+                >
+                  {placeholder}
+                </button>
+              )}
+              {options.map(option => (
+                <button
+                  key={option.id}
+                  onClick={() => { onChange(option.id); setIsOpen(false); }}
+                  className={cn(
+                    'w-full px-4 py-2.5 text-left hover:bg-slate-700/50 transition-colors text-sm',
+                    value === option.id ? 'bg-yellow-500/10 text-yellow-400 font-semibold' : 'text-white'
+                  )}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -188,10 +246,10 @@ function LeagueFilter({ leagues, value, onChange }: LeagueFilterProps) {
         <button
           onClick={() => onChange('all')}
           className={cn(
-            'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-colors',
+            'flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all border',
             value === 'all'
-              ? 'bg-fb-navy text-fb-yellow'
-              : 'bg-slate-800 text-gray-400 hover:bg-gray-700'
+              ? 'bg-yellow-500 text-slate-900 font-medium border-yellow-500'
+              : 'bg-slate-800/80 text-slate-400 border-slate-600/50 hover:bg-slate-700/80 hover:text-white hover:border-slate-500/50'
           )}
         >
           Tümü
@@ -205,19 +263,21 @@ function LeagueFilter({ leagues, value, onChange }: LeagueFilterProps) {
               key={league.id}
               onClick={() => onChange(isActive ? 'all' : String(league.id))}
               className={cn(
-                'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-colors',
+                'flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all border',
                 isActive
-                  ? 'bg-fb-navy text-fb-yellow'
-                  : 'bg-slate-800 text-gray-400 hover:bg-gray-700'
+                  ? 'bg-yellow-500 text-slate-900 font-medium border-yellow-500'
+                  : 'bg-slate-800/80 text-slate-400 border-slate-600/50 hover:bg-slate-700/80 hover:text-white hover:border-slate-500/50'
               )}
             >
-              <Image 
-                src={league.logo} 
-                alt="" 
-                width={16} 
-                height={16} 
-                className="dark-logo-filter"
-              />
+              <div className="h-4 w-4 flex items-center justify-center flex-shrink-0">
+                <Image 
+                  src={league.logo} 
+                  alt="" 
+                  width={16} 
+                  height={16} 
+                  className={cn('max-h-4 w-auto object-contain', !isActive && 'dark-logo-filter')}
+                />
+              </div>
               {leagueName}
             </button>
           );
@@ -347,8 +407,10 @@ export default function MatchesPage() {
     // Apply filters
     let filtered = [...sourceFixtures];
     
-    // League filter
-    if (leagueFilter !== 'all') {
+    // League filter - exclude Friendlies Club when "Tümü" is selected
+    if (leagueFilter === 'all') {
+      filtered = filtered.filter(f => !FRIENDLIES_LEAGUE_IDS.includes(f.league.id));
+    } else {
       filtered = filtered.filter(f => f.league.id === parseInt(leagueFilter));
     }
     
@@ -407,8 +469,10 @@ export default function MatchesPage() {
       );
     }
     
-    // Apply league filter if set
-    if (leagueFilter !== 'all') {
+    // Apply league filter - exclude Friendlies Club when "Tümü" is selected
+    if (leagueFilter === 'all') {
+      sourceFixtures = sourceFixtures.filter(f => !FRIENDLIES_LEAGUE_IDS.includes(f.league.id));
+    } else {
       sourceFixtures = sourceFixtures.filter(f => f.league.id === parseInt(leagueFilter));
     }
     
@@ -435,13 +499,13 @@ export default function MatchesPage() {
   };
   
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="font-bold text-3xl md:text-4xl text-white mb-2">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="font-bold text-2xl sm:text-3xl md:text-4xl text-white mb-1 sm:mb-2">
           <span className="text-fb-yellow">FENERBAHÇE</span> MAÇLARI
         </h1>
-        <p className="text-gray-400">
+        <p className="text-sm sm:text-base text-gray-400">
           {activeTab === 'tum-maclar' 
             ? `${seasonFilter}-${parseInt(seasonFilter) + 1} Sezonu`
             : `${defaultSeason}-${defaultSeason + 1} Sezonu`
@@ -449,24 +513,28 @@ export default function MatchesPage() {
         </p>
       </div>
       
-      {/* Tabs */}
-      <div className="flex gap-1 mb-6 border-b border-white/10 overflow-x-auto">
-        {TABS.map(t => (
-          <button
-            key={t.id}
-            onClick={() => handleTabChange(t.id)}
-            className={cn(
-              'tab whitespace-nowrap',
-              activeTab === t.id && 'tab-active'
-            )}
-          >
-            {t.label}
-          </button>
-        ))}
+      {/* Tabs - Horizontal scroll on mobile */}
+      <div className="overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0 mb-4 sm:mb-6">
+        <div className="flex gap-1 sm:gap-2 p-1 bg-slate-800/50 rounded-xl border border-slate-700/50 min-w-max sm:min-w-0">
+          {TABS.map(t => (
+            <button
+              key={t.id}
+              onClick={() => handleTabChange(t.id)}
+              className={cn(
+                'flex-1 sm:flex-1 px-3 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium transition-all text-center whitespace-nowrap text-sm sm:text-base',
+                activeTab === t.id 
+                  ? 'bg-yellow-500 text-slate-900' 
+                  : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
+              )}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
       </div>
       
       {/* Filters */}
-      <div className="card p-4 mb-6 space-y-4">
+      <div className="card p-3 sm:p-4 mb-4 sm:mb-6 space-y-3 sm:space-y-4 relative z-20">
         {/* League Filter - All tabs */}
         <LeagueFilter
           leagues={leagues}
@@ -475,7 +543,7 @@ export default function MatchesPage() {
         />
         
         {/* Tab-specific filters */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {/* Season Filter - Only for "Tüm Maçlar" tab */}
           {activeTab === 'tum-maclar' && (
             <SelectFilter
@@ -525,7 +593,7 @@ export default function MatchesPage() {
         {(leagueFilter !== 'all' || monthFilter !== 'all' || resultFilter !== 'all' || venueFilter !== 'all' || (activeTab === 'tum-maclar' && seasonFilter !== String(defaultSeason))) && (
           <button
             onClick={() => handleTabChange(activeTab)}
-            className="text-sm text-red-400 hover:text-red-300 transition-colors"
+            className="text-xs sm:text-sm text-red-400 hover:text-red-300 transition-colors"
           >
             Filtreleri Temizle ×
           </button>

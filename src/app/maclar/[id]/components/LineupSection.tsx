@@ -122,8 +122,8 @@ function PlayerMarkerWithPhoto({
   // Takım primary rengi
   const borderColor = isFenerbahce ? 'ring-fb-yellow' : 'ring-blue-500';
   
-  // Fotoğraf URL'i - player.photo veya props'tan gelen photo
-  const photoUrl = photo || player.photo;
+  // Fotoğraf URL'i - props'tan gelen photo
+  const photoUrl = photo;
   
   return (
     <Link 
@@ -547,10 +547,10 @@ function SubstitutesBox({
   );
   
   return (
-    <div className="card p-4">
-      <h4 className="text-xs text-gray-500 font-medium mb-3 uppercase tracking-wider">Yedek Oyuncular</h4>
+    <div className="card p-3 sm:p-4">
+      <h4 className="text-xs text-gray-500 font-medium mb-2 sm:mb-3 uppercase tracking-wider">Yedek Oyuncular</h4>
       
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Home Substitutes */}
         <div>
           <div className="flex items-center gap-1.5 mb-2 pb-2 border-b border-white/10">
@@ -562,7 +562,7 @@ function SubstitutesBox({
               className="object-contain"
             />
             <span className={cn(
-              'text-xs font-medium',
+              'text-xs font-medium truncate',
               isHomeFB ? 'text-fb-yellow' : 'text-white'
             )}>
               {homeLineup.team.name}
@@ -582,7 +582,7 @@ function SubstitutesBox({
               className="object-contain"
             />
             <span className={cn(
-              'text-xs font-medium',
+              'text-xs font-medium truncate',
               isAwayFB ? 'text-fb-yellow' : 'text-white'
             )}>
               {awayLineup.team.name}
@@ -636,22 +636,22 @@ function SubstitutionsTable({
           
           {/* In/Out */}
           <div className="flex-1 min-w-0">
-            {/* Player In */}
+            {/* Player In (assist = player coming in) */}
             <div className="flex items-center gap-1.5">
               <span className="text-green-400 text-sm flex-shrink-0">↑</span>
               <span className={cn(
                 'text-sm truncate',
                 isFenerbahce ? 'text-fb-yellow' : 'text-white'
               )}>
-                {shortenName(sub.player.name)}
+                {sub.assist.name ? shortenName(sub.assist.name) : '-'}
               </span>
             </div>
             
-            {/* Player Out */}
+            {/* Player Out (player = player going out) */}
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="text-red-400 text-sm flex-shrink-0">↓</span>
               <span className="text-xs text-gray-400 truncate">
-                {sub.assist.name ? shortenName(sub.assist.name) : '-'}
+                {shortenName(sub.player.name)}
               </span>
             </div>
           </div>
@@ -664,10 +664,10 @@ function SubstitutionsTable({
   );
   
   return (
-    <div className="card p-4">
-      <h4 className="text-xs text-gray-500 font-medium mb-3 uppercase tracking-wider">Oyuncu Değişiklikleri</h4>
+    <div className="card p-3 sm:p-4">
+      <h4 className="text-xs text-gray-500 font-medium mb-2 sm:mb-3 uppercase tracking-wider">Oyuncu Değişiklikleri</h4>
       
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Home Team Substitutions */}
         <div>
           <div className="flex items-center gap-1.5 mb-2 pb-2 border-b border-white/10">
@@ -679,7 +679,7 @@ function SubstitutionsTable({
               className="object-contain"
             />
             <span className={cn(
-              'text-xs font-medium',
+              'text-xs font-medium truncate',
               isHomeFB ? 'text-fb-yellow' : 'text-white'
             )}>
               {homeLineup.team.name}
@@ -699,7 +699,7 @@ function SubstitutionsTable({
               className="object-contain"
             />
             <span className={cn(
-              'text-xs font-medium',
+              'text-xs font-medium truncate',
               isAwayFB ? 'text-fb-yellow' : 'text-white'
             )}>
               {awayLineup.team.name}
@@ -717,9 +717,28 @@ function SubstitutionsTable({
 // =============================================
 
 export function LineupSection({ homeLineup, awayLineup, events, players }: LineupSectionProps) {
+  // startXI verisi kontrolü - undefined veya boş olabilir
+  const homeStartXI = homeLineup?.startXI || [];
+  const awayStartXI = awayLineup?.startXI || [];
+  
+  // Eğer startXI boşsa, kadro henüz açıklanmamış demektir
+  if (homeStartXI.length === 0 || awayStartXI.length === 0) {
+    return (
+      <div className="card p-3 sm:p-4">
+        <h3 className="section-title text-base sm:text-lg mb-3 sm:mb-4">KADROLAR</h3>
+        <p className="text-gray-400 text-center py-6 sm:py-8 text-sm sm:text-base">
+          Kadro bilgisi henüz açıklanmadı
+        </p>
+        <p className="text-xs sm:text-sm text-gray-500 text-center">
+          İlk 11 bilgileri maç saatine yakın açıklanacaktır.
+        </p>
+      </div>
+    );
+  }
+  
   // Grid verisi kontrolü
-  const hasGridData = homeLineup.startXI.some(p => p.player.grid) && 
-                      awayLineup.startXI.some(p => p.player.grid);
+  const hasGridData = homeStartXI.some(p => p.player?.grid) && 
+                      awayStartXI.some(p => p.player?.grid);
   
   // Oyuncu fotoğraf ve rating map'i oluştur
   const playerPhotoMap = buildPlayerPhotoMap(players);
@@ -727,9 +746,9 @@ export function LineupSection({ homeLineup, awayLineup, events, players }: Lineu
   if (!hasGridData) {
     // Grid verisi yoksa basit liste görünümü
     return (
-      <div className="card p-4">
-        <h3 className="section-title text-lg mb-4">KADROLAR</h3>
-        <p className="text-gray-400 text-center py-8">
+      <div className="card p-3 sm:p-4">
+        <h3 className="section-title text-base sm:text-lg mb-3 sm:mb-4">KADROLAR</h3>
+        <p className="text-gray-400 text-center py-6 sm:py-8 text-sm sm:text-base">
           Kadro diziliş bilgisi mevcut değil
         </p>
       </div>
@@ -737,12 +756,12 @@ export function LineupSection({ homeLineup, awayLineup, events, players }: Lineu
   }
   
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6">
       {/* Left Column - Football Pitch + Substitutions (3/5 width on large screens) */}
-      <div className="lg:col-span-3 space-y-4">
+      <div className="lg:col-span-3 space-y-3 sm:space-y-4">
         {/* Pitch */}
-        <div className="card p-4">
-          <h3 className="section-title text-lg mb-4">SAHA DİZİLİŞİ</h3>
+        <div className="card p-2 sm:p-4">
+          <h3 className="section-title text-base sm:text-lg mb-3 sm:mb-4">SAHA DİZİLİŞİ</h3>
           <FootballPitch 
             homeLineup={homeLineup} 
             awayLineup={awayLineup} 
@@ -759,7 +778,7 @@ export function LineupSection({ homeLineup, awayLineup, events, players }: Lineu
       </div>
       
       {/* Right Column - Info Boxes (2/5 width on large screens) */}
-      <div className="lg:col-span-2 space-y-4">
+      <div className="lg:col-span-2 space-y-3 sm:space-y-4">
         {/* Box 1: Head Coaches */}
         <CoachesBox homeLineup={homeLineup} awayLineup={awayLineup} />
         

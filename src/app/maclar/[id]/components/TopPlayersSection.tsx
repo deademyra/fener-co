@@ -53,25 +53,25 @@ interface StatColumn {
 const STAT_COLUMNS: Record<string, StatColumn> = {
   goals: {
     key: 'goals',
-    label: 'Gol',
+    label: 'gol',
     getValue: (stats) => stats.goals.total || 0,
     format: (v) => String(v || 0),
   },
   assists: {
     key: 'assists',
-    label: 'Ast',
+    label: 'asist',
     getValue: (stats) => stats.goals.assists || 0,
     format: (v) => String(v || 0),
   },
   shotsOn: {
     key: 'shotsOn',
-    label: 'İşut',
+    label: 'isab. şut',
     getValue: (stats) => stats.shots.on || 0,
     format: (v) => String(v || 0),
   },
   duelsWonPct: {
     key: 'duelsWonPct',
-    label: 'İM%',
+    label: 'ikili müc.',
     getValue: (stats) => {
       const total = stats.duels.total || 0;
       const won = stats.duels.won || 0;
@@ -81,35 +81,38 @@ const STAT_COLUMNS: Record<string, StatColumn> = {
   },
   passAccuracy: {
     key: 'passAccuracy',
-    label: 'Pas%',
+    label: 'pas %',
     getValue: (stats) => {
+      // API returns accuracy as number of accurate passes, not percentage
       const acc = stats.passes.accuracy;
-      if (acc === null || acc === undefined) return 0;
-      return typeof acc === 'string' ? parseInt(acc) || 0 : acc;
+      const total = stats.passes.total;
+      if (acc === null || acc === undefined || !total || total === 0) return 0;
+      const accurateCount = typeof acc === 'string' ? parseInt(acc) || 0 : acc;
+      return Math.round((accurateCount / total) * 100);
     },
     format: (v) => `${v}%`,
   },
   keyPasses: {
     key: 'keyPasses',
-    label: 'KP',
+    label: 'kilit pas',
     getValue: (stats) => stats.passes.key || 0,
     format: (v) => String(v || 0),
   },
   interceptions: {
     key: 'interceptions',
-    label: 'Top K.',
+    label: 'top kes.',
     getValue: (stats) => stats.tackles.interceptions || 0,
     format: (v) => String(v || 0),
   },
   saves: {
     key: 'saves',
-    label: 'Krt',
+    label: 'kurtarış',
     getValue: (stats) => stats.goals.saves || 0,
     format: (v) => String(v || 0),
   },
   conceded: {
     key: 'conceded',
-    label: 'Gol Y.',
+    label: 'yenilen',
     getValue: (stats) => stats.goals.conceded || 0,
     format: (v) => String(v || 0),
   },
@@ -153,36 +156,6 @@ function getDynamicStatColumns(stats: PlayerStatistics, position: PositionCatego
   }
   
   return columns;
-}
-
-// Get merged stat columns for all top players (for consistent header display)
-function getMergedStatColumns(players: PlayerWithTeam[]): StatColumn[] {
-  const columnCounts: Map<string, { column: StatColumn; count: number }> = new Map();
-  
-  players.forEach(player => {
-    const stats = player.statistics[0];
-    if (!stats) return;
-    
-    const position = getPositionCategory(stats.games?.position);
-    const playerColumns = getDynamicStatColumns(stats, position);
-    
-    playerColumns.forEach(col => {
-      const existing = columnCounts.get(col.key);
-      if (existing) {
-        existing.count++;
-      } else {
-        columnCounts.set(col.key, { column: col, count: 1 });
-      }
-    });
-  });
-  
-  // Sort by frequency and take top 3
-  const sorted = Array.from(columnCounts.values())
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 3)
-    .map(item => item.column);
-  
-  return sorted;
 }
 
 export function TopPlayersSection({ 
@@ -230,26 +203,11 @@ export function TopPlayersSection({
     );
   }
   
-  // Get merged stat columns for consistent header display
-  const statColumns = getMergedStatColumns(topPlayers);
-  
   return (
     <div className="card p-4">
       <h3 className="section-title text-lg mb-4">ÖNE ÇIKAN OYUNCULAR</h3>
       
-      {/* Table Header */}
-      <div className="hidden sm:flex items-center gap-2 px-3 pb-2 border-b border-gray-800 mb-2">
-        <div className="flex-1" /> {/* Spacer for player info */}
-        <div className="flex items-center justify-end gap-2">
-          <span className="text-[10px] text-gray-500 uppercase w-10 text-right">Puan</span>
-          <span className="text-[10px] text-gray-500 uppercase w-10 text-right">Dk</span>
-          {statColumns.map(col => (
-            <span key={col.key} className="text-[10px] text-gray-500 uppercase w-10 text-right">
-              {col.label}
-            </span>
-          ))}
-        </div>
-      </div>
+      {/* No table header - removed as per request */}
       
       <div className="space-y-2">
         {topPlayers.map((player, index) => {
@@ -257,6 +215,10 @@ export function TopPlayersSection({
           const rating = parseFloat(stats.games.rating || '0');
           const isFBPlayer = player.teamId === FENERBAHCE_TEAM_ID;
           const minutes = stats.games.minutes || 0;
+          
+          // Get dynamic stat columns for THIS specific player
+          const position = getPositionCategory(stats.games?.position);
+          const playerStatColumns = getDynamicStatColumns(stats, position);
           
           return (
             <Link
@@ -307,32 +269,36 @@ export function TopPlayersSection({
                 </p>
               </div>
               
-              {/* Right side: Stats - Fixed width columns for alignment */}
-              <div className="flex items-center justify-end gap-2 flex-shrink-0">
-                {/* Rating */}
-                <div className={cn(
-                  'w-10 h-6 rounded flex items-center justify-center text-xs font-bold text-white',
-                  getRatingColor(rating)
-                )}>
-                  {rating.toFixed(1)}
+              {/* Right side: Stats - Each player has their own dynamic columns */}
+              <div className="flex items-center justify-end gap-3 sm:gap-4 flex-shrink-0">
+                {/* Rating - with label below */}
+                <div className="flex flex-col items-center">
+                  <div className={cn(
+                    'w-10 h-6 rounded flex items-center justify-center text-xs font-bold text-white',
+                    getRatingColor(rating)
+                  )}>
+                    {rating.toFixed(1)}
+                  </div>
+                  <span className="text-[9px] text-gray-500 mt-0.5">puan</span>
                 </div>
                 
-                {/* Minutes */}
-                <div className="w-10 text-right">
-                  <span className="text-xs sm:text-sm text-gray-400 font-mono">
+                {/* Minutes - with label below */}
+                <div className="flex flex-col items-center">
+                  <span className="text-xs sm:text-sm text-gray-300 font-medium tabular-nums">
                     {minutes}'
                   </span>
+                  <span className="text-[9px] text-gray-500 mt-0.5">dakika</span>
                 </div>
                 
-                {/* Dynamic Stat Columns */}
-                {statColumns.map(col => {
+                {/* Dynamic Stat Columns - unique per player */}
+                {playerStatColumns.map(col => {
                   const value = col.getValue(stats);
                   const formattedValue = col.format ? col.format(value) : String(value || '-');
                   const isGoalOrAssist = col.key === 'goals' || col.key === 'assists';
                   const hasValue = value !== null && value !== 0 && value !== '0';
                   
                   return (
-                    <div key={col.key} className="w-10 text-right">
+                    <div key={col.key} className="flex flex-col items-center min-w-[40px]">
                       <span className={cn(
                         'text-xs sm:text-sm font-medium tabular-nums',
                         isGoalOrAssist && hasValue 
@@ -344,6 +310,9 @@ export function TopPlayersSection({
                             : 'text-gray-600'
                       )}>
                         {formattedValue}
+                      </span>
+                      <span className="text-[9px] text-gray-500 mt-0.5 whitespace-nowrap">
+                        {col.label}
                       </span>
                     </div>
                   );

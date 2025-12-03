@@ -3,7 +3,7 @@
 import Link from 'next/link';
 
 interface AnimatedLogoProps {
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'header';
   showAnimation?: boolean;
 }
 
@@ -12,6 +12,7 @@ export function AnimatedLogo({ size = 'md', showAnimation = true }: AnimatedLogo
     sm: 'text-lg',
     md: 'text-xl',
     lg: 'text-2xl',
+    header: 'text-[2rem]', // 2rem specifically for header
   };
 
   const suffixes = ['', 'llect', 'unt', 'mpute', 'mpare', 'ver', 'mment'];

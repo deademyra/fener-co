@@ -11,6 +11,7 @@ import {
 } from '@/types';
 import { API_CONFIG, FENERBAHCE_TEAM_ID, CURRENT_SEASON } from '../constants';
 import { cacheStore } from '../cache';
+import { apiLogger } from '../api-logger';
 
 // =============================================
 // API CLIENT CONFIGURATION
@@ -23,6 +24,7 @@ interface RequestOptions {
   endpoint: string;
   params?: Record<string, string | number>;
   retries?: number;
+  callerPage?: string; // Track which page made the request
 }
 
 // =============================================
@@ -51,7 +53,8 @@ class ApiError extends Error {
 // =============================================
 
 async function apiRequest<T>(options: RequestOptions): Promise<ApiResponse<T>> {
-  const { endpoint, params = {}, retries = 3 } = options;
+  const { endpoint, params = {}, retries = 3, callerPage = 'unknown' } = options;
+  const startTime = Date.now();
   
   // Rate limit kontrolü
   const dailyRequests = cacheStore.getTotalDailyRequests();
@@ -86,10 +89,33 @@ async function apiRequest<T>(options: RequestOptions): Promise<ApiResponse<T>> {
       cacheStore.incrementRequestCount(endpoint);
       
       if (!response.ok) {
+        const responseTime = Date.now() - startTime;
+        apiLogger.log({
+          callerPage,
+          endpoint,
+          params,
+          status: response.status,
+          statusText: response.statusText,
+          responseTime,
+          response: null,
+          error: `API request failed: ${response.statusText}`,
+        });
         throw new ApiError(`API request failed: ${response.statusText}`, response.status);
       }
       
       const data: ApiResponse<T> = await response.json();
+      const responseTime = Date.now() - startTime;
+      
+      // Log successful response
+      apiLogger.log({
+        callerPage,
+        endpoint,
+        params,
+        status: response.status,
+        statusText: response.statusText,
+        responseTime,
+        response: data,
+      });
       
       // API hata kontrolü
       if (data.errors && Object.keys(data.errors).length > 0) {
@@ -132,11 +158,13 @@ async function apiRequest<T>(options: RequestOptions): Promise<ApiResponse<T>> {
  */
 export async function getFixtures(
   leagueId: number, 
-  season: number = CURRENT_SEASON
+  season: number = CURRENT_SEASON,
+  callerPage: string = 'unknown'
 ): Promise<Fixture[]> {
   const response = await apiRequest<Fixture[]>({
     endpoint: '/fixtures',
     params: { league: leagueId, season },
+    callerPage,
   });
   return response.response;
 }
@@ -145,11 +173,13 @@ export async function getFixtures(
  * Fenerbahçe'nin tüm maçlarını getir
  */
 export async function getFenerbahceFixtures(
-  season: number = CURRENT_SEASON
+  season: number = CURRENT_SEASON,
+  callerPage: string = 'unknown'
 ): Promise<Fixture[]> {
   const response = await apiRequest<Fixture[]>({
     endpoint: '/fixtures',
     params: { team: FENERBAHCE_TEAM_ID, season },
+    callerPage,
   });
   return response.response;
 }
@@ -157,10 +187,14 @@ export async function getFenerbahceFixtures(
 /**
  * Belirli bir maçın detaylarını getir
  */
-export async function getFixtureById(fixtureId: number): Promise<Fixture | null> {
+export async function getFixtureById(
+  fixtureId: number,
+  callerPage: string = 'unknown'
+): Promise<Fixture | null> {
   const response = await apiRequest<Fixture[]>({
     endpoint: '/fixtures',
     params: { id: fixtureId },
+    callerPage,
   });
   return response.response[0] || null;
 }
@@ -168,10 +202,14 @@ export async function getFixtureById(fixtureId: number): Promise<Fixture | null>
 /**
  * Belirli bir maçın olaylarını getir (goller, kartlar, değişiklikler)
  */
-export async function getFixtureEvents(fixtureId: number): Promise<Fixture | null> {
+export async function getFixtureEvents(
+  fixtureId: number,
+  callerPage: string = 'unknown'
+): Promise<Fixture | null> {
   const response = await apiRequest<Fixture[]>({
     endpoint: '/fixtures',
     params: { id: fixtureId },
+    callerPage,
   });
   return response.response[0] || null;
 }
@@ -179,10 +217,14 @@ export async function getFixtureEvents(fixtureId: number): Promise<Fixture | nul
 /**
  * Belirli bir maçın kadrolarını getir
  */
-export async function getFixtureLineups(fixtureId: number): Promise<Fixture | null> {
+export async function getFixtureLineups(
+  fixtureId: number,
+  callerPage: string = 'unknown'
+): Promise<Fixture | null> {
   const response = await apiRequest<Fixture[]>({
     endpoint: '/fixtures',
     params: { id: fixtureId },
+    callerPage,
   });
   return response.response[0] || null;
 }
@@ -190,10 +232,14 @@ export async function getFixtureLineups(fixtureId: number): Promise<Fixture | nu
 /**
  * Belirli bir maçın istatistiklerini getir
  */
-export async function getFixtureStatistics(fixtureId: number): Promise<Fixture | null> {
+export async function getFixtureStatistics(
+  fixtureId: number,
+  callerPage: string = 'unknown'
+): Promise<Fixture | null> {
   const response = await apiRequest<Fixture[]>({
     endpoint: '/fixtures',
     params: { id: fixtureId },
+    callerPage,
   });
   return response.response[0] || null;
 }
@@ -201,10 +247,13 @@ export async function getFixtureStatistics(fixtureId: number): Promise<Fixture |
 /**
  * Canlı maçları getir
  */
-export async function getLiveFixtures(): Promise<Fixture[]> {
+export async function getLiveFixtures(
+  callerPage: string = 'unknown'
+): Promise<Fixture[]> {
   const response = await apiRequest<Fixture[]>({
     endpoint: '/fixtures',
     params: { live: 'all' },
+    callerPage,
   });
   return response.response;
 }
@@ -212,11 +261,14 @@ export async function getLiveFixtures(): Promise<Fixture[]> {
 /**
  * Bugünün maçlarını getir
  */
-export async function getTodayFixtures(): Promise<Fixture[]> {
+export async function getTodayFixtures(
+  callerPage: string = 'unknown'
+): Promise<Fixture[]> {
   const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
   const response = await apiRequest<Fixture[]>({
     endpoint: '/fixtures',
     params: { date: today },
+    callerPage,
   });
   return response.response;
 }
@@ -227,11 +279,13 @@ export async function getTodayFixtures(): Promise<Fixture[]> {
 export async function getFixturesByDateRange(
   from: string,
   to: string,
-  teamId: number = FENERBAHCE_TEAM_ID
+  teamId: number = FENERBAHCE_TEAM_ID,
+  callerPage: string = 'unknown'
 ): Promise<Fixture[]> {
   const response = await apiRequest<Fixture[]>({
     endpoint: '/fixtures',
     params: { team: teamId, from, to },
+    callerPage,
   });
   return response.response;
 }
@@ -241,11 +295,13 @@ export async function getFixturesByDateRange(
  */
 export async function getNextFixtures(
   teamId: number = FENERBAHCE_TEAM_ID,
-  count: number = 5
+  count: number = 5,
+  callerPage: string = 'unknown'
 ): Promise<Fixture[]> {
   const response = await apiRequest<Fixture[]>({
     endpoint: '/fixtures',
     params: { team: teamId, next: count },
+    callerPage,
   });
   return response.response;
 }
@@ -255,11 +311,13 @@ export async function getNextFixtures(
  */
 export async function getLastFixtures(
   teamId: number = FENERBAHCE_TEAM_ID,
-  count: number = 5
+  count: number = 5,
+  callerPage: string = 'unknown'
 ): Promise<Fixture[]> {
   const response = await apiRequest<Fixture[]>({
     endpoint: '/fixtures',
     params: { team: teamId, last: count },
+    callerPage,
   });
   return response.response;
 }
@@ -273,11 +331,13 @@ export async function getLastFixtures(
  */
 export async function getStandings(
   leagueId: number,
-  season: number = CURRENT_SEASON
+  season: number = CURRENT_SEASON,
+  callerPage: string = 'unknown'
 ): Promise<StandingsResponse | null> {
   const response = await apiRequest<StandingsResponse[]>({
     endpoint: '/standings',
     params: { league: leagueId, season },
+    callerPage,
   });
   return response.response[0] || null;
 }
@@ -289,10 +349,14 @@ export async function getStandings(
 /**
  * Takım bilgilerini getir
  */
-export async function getTeam(teamId: number): Promise<TeamWithVenue | null> {
+export async function getTeam(
+  teamId: number,
+  callerPage: string = 'unknown'
+): Promise<TeamWithVenue | null> {
   const response = await apiRequest<{ team: TeamWithVenue; venue: unknown }[]>({
     endpoint: '/teams',
     params: { id: teamId },
+    callerPage,
   });
   
   if (response.response[0]) {
@@ -308,11 +372,13 @@ export async function getTeam(teamId: number): Promise<TeamWithVenue | null> {
  * Takım kadrosunu getir
  */
 export async function getSquad(
-  teamId: number = FENERBAHCE_TEAM_ID
+  teamId: number = FENERBAHCE_TEAM_ID,
+  callerPage: string = 'unknown'
 ): Promise<Squad | null> {
   const response = await apiRequest<Squad[]>({
     endpoint: '/players/squads',
     params: { team: teamId },
+    callerPage,
   });
   return response.response[0] || null;
 }
@@ -324,11 +390,13 @@ export async function getSquad(
 export async function getTeamStatistics(
   teamId: number = FENERBAHCE_TEAM_ID,
   leagueId: number,
-  season: number = CURRENT_SEASON
+  season: number = CURRENT_SEASON,
+  callerPage: string = 'unknown'
 ): Promise<TeamSeasonStatistics | null> {
   const response = await apiRequest<TeamSeasonStatistics>({
     endpoint: '/teams/statistics',
     params: { team: teamId, league: leagueId, season },
+    callerPage,
   });
   return response.response || null;
 }
@@ -342,11 +410,13 @@ export async function getTeamStatistics(
  */
 export async function getPlayer(
   playerId: number,
-  season: number = CURRENT_SEASON
+  season: number = CURRENT_SEASON,
+  callerPage: string = 'unknown'
 ): Promise<PlayerWithStats | null> {
   const response = await apiRequest<PlayerWithStats[]>({
     endpoint: '/players',
     params: { id: playerId, season },
+    callerPage,
   });
   return response.response[0] || null;
 }
@@ -356,11 +426,13 @@ export async function getPlayer(
  */
 export async function getPlayerStatistics(
   playerId: number,
-  season: number = CURRENT_SEASON
+  season: number = CURRENT_SEASON,
+  callerPage: string = 'unknown'
 ): Promise<PlayerWithStats[]> {
   const response = await apiRequest<PlayerWithStats[]>({
     endpoint: '/players',
     params: { id: playerId, season },
+    callerPage,
   });
   return response.response;
 }
@@ -368,10 +440,14 @@ export async function getPlayerStatistics(
 /**
  * Oyuncunun oynadığı sezonları getir
  */
-export async function getPlayerSeasons(playerId: number): Promise<number[]> {
+export async function getPlayerSeasons(
+  playerId: number,
+  callerPage: string = 'unknown'
+): Promise<number[]> {
   const response = await apiRequest<number[]>({
     endpoint: '/players/seasons',
     params: { player: playerId },
+    callerPage,
   });
   return response.response;
 }
@@ -381,11 +457,13 @@ export async function getPlayerSeasons(playerId: number): Promise<number[]> {
  */
 export async function getTeamPlayers(
   teamId: number = FENERBAHCE_TEAM_ID,
-  season: number = CURRENT_SEASON
+  season: number = CURRENT_SEASON,
+  callerPage: string = 'unknown'
 ): Promise<PlayerWithStats[]> {
   const response = await apiRequest<PlayerWithStats[]>({
     endpoint: '/players',
     params: { team: teamId, season },
+    callerPage,
   });
   return response.response;
 }
@@ -399,11 +477,13 @@ export async function getTeamPlayers(
  */
 export async function getTopScorers(
   leagueId: number,
-  season: number = CURRENT_SEASON
+  season: number = CURRENT_SEASON,
+  callerPage: string = 'unknown'
 ): Promise<TopScorer[]> {
   const response = await apiRequest<TopScorer[]>({
     endpoint: '/players/topscorers',
     params: { league: leagueId, season },
+    callerPage,
   });
   return response.response;
 }
@@ -413,11 +493,13 @@ export async function getTopScorers(
  */
 export async function getTopAssists(
   leagueId: number,
-  season: number = CURRENT_SEASON
+  season: number = CURRENT_SEASON,
+  callerPage: string = 'unknown'
 ): Promise<TopScorer[]> {
   const response = await apiRequest<TopScorer[]>({
     endpoint: '/players/topassists',
     params: { league: leagueId, season },
+    callerPage,
   });
   return response.response;
 }
@@ -429,10 +511,14 @@ export async function getTopAssists(
 /**
  * Teknik direktör bilgilerini getir
  */
-export async function getCoach(teamId: number = FENERBAHCE_TEAM_ID): Promise<Coach | null> {
+export async function getCoach(
+  teamId: number = FENERBAHCE_TEAM_ID,
+  callerPage: string = 'unknown'
+): Promise<Coach | null> {
   const response = await apiRequest<Coach[]>({
     endpoint: '/coachs',
     params: { team: teamId },
+    callerPage,
   });
   return response.response[0] || null;
 }
@@ -447,12 +533,14 @@ export async function getCoach(teamId: number = FENERBAHCE_TEAM_ID): Promise<Coa
 export async function getHeadToHead(
   team1: number,
   team2: number,
-  last: number = 10
+  last: number = 10,
+  callerPage: string = 'unknown'
 ): Promise<Fixture[]> {
   const h2h = `${team1}-${team2}`;
   const response = await apiRequest<Fixture[]>({
     endpoint: '/fixtures/headtohead',
     params: { h2h, last },
+    callerPage,
   });
   return response.response;
 }
@@ -488,10 +576,14 @@ export interface TransferResponse {
   }>;
 }
 
-export async function getTransfers(teamId: number = FENERBAHCE_TEAM_ID): Promise<TransferResponse[]> {
+export async function getTransfers(
+  teamId: number = FENERBAHCE_TEAM_ID,
+  callerPage: string = 'unknown'
+): Promise<TransferResponse[]> {
   const response = await apiRequest<TransferResponse[]>({
     endpoint: '/transfers',
     params: { team: teamId },
+    callerPage,
   });
   return response.response;
 }
@@ -535,3 +627,215 @@ export const apiClient = {
   getTodayFixtures,
   getTransfers,
 };
+
+// =============================================
+// PLAYER TRANSFERS ENDPOINT
+// =============================================
+
+export interface PlayerTransferResponse {
+  player: {
+    id: number;
+    name: string;
+  };
+  update: string;
+  transfers: Array<{
+    date: string;
+    type: string;
+    teams: {
+      in: {
+        id: number;
+        name: string;
+        logo: string;
+      };
+      out: {
+        id: number;
+        name: string;
+        logo: string;
+      };
+    };
+  }>;
+}
+
+/**
+ * Get player transfer history
+ */
+export async function getPlayerTransfers(
+  playerId: number,
+  callerPage: string = 'unknown'
+): Promise<PlayerTransferResponse | null> {
+  const response = await apiRequest<PlayerTransferResponse[]>({
+    endpoint: '/transfers',
+    params: { player: playerId },
+    callerPage,
+  });
+  return response.response[0] || null;
+}
+
+// =============================================
+// PLAYER TROPHIES ENDPOINT
+// =============================================
+
+export interface PlayerTrophy {
+  league: string;
+  country: string;
+  season: string | null;
+  place: string;
+}
+
+/**
+ * Get player trophies/honors
+ */
+export async function getPlayerTrophies(
+  playerId: number,
+  callerPage: string = 'unknown'
+): Promise<PlayerTrophy[]> {
+  const response = await apiRequest<PlayerTrophy[]>({
+    endpoint: '/trophies',
+    params: { player: playerId },
+    callerPage,
+  });
+  return response.response;
+}
+
+// =============================================
+// PLAYER SIDELINED (INJURY HISTORY) ENDPOINT
+// =============================================
+
+export interface PlayerSidelined {
+  type: string;
+  start: string;
+  end: string;
+}
+
+/**
+ * Get player injury/sidelined history
+ */
+export async function getPlayerSidelined(
+  playerId: number,
+  callerPage: string = 'unknown'
+): Promise<PlayerSidelined[]> {
+  const response = await apiRequest<PlayerSidelined[]>({
+    endpoint: '/sidelined',
+    params: { player: playerId },
+    callerPage,
+  });
+  return response.response;
+}
+
+// =============================================
+// PLAYER TEAMS ENDPOINT
+// =============================================
+
+export interface PlayerTeamResponse {
+  team: {
+    id: number;
+    name: string;
+    logo: string;
+  };
+  seasons: number[];
+}
+
+/**
+ * Get teams a player has played for
+ */
+export async function getPlayerTeams(
+  playerId: number,
+  callerPage: string = 'unknown'
+): Promise<PlayerTeamResponse[]> {
+  const response = await apiRequest<PlayerTeamResponse[]>({
+    endpoint: '/players/teams',
+    params: { player: playerId },
+    callerPage,
+  });
+  return response.response;
+}
+
+// =============================================
+// FIXTURE PLAYER STATISTICS ENDPOINT
+// =============================================
+
+export interface FixturePlayerStatsResponse {
+  team: {
+    id: number;
+    name: string;
+    logo: string;
+    update: string;
+  };
+  players: Array<{
+    player: {
+      id: number;
+      name: string;
+      photo: string;
+    };
+    statistics: Array<{
+      games: {
+        minutes: number | null;
+        number: number | null;
+        position: string | null;
+        rating: string | null;
+        captain: boolean;
+        substitute: boolean;
+      };
+      offsides: number | null;
+      shots: {
+        total: number | null;
+        on: number | null;
+      };
+      goals: {
+        total: number | null;
+        conceded: number | null;
+        assists: number | null;
+        saves: number | null;
+      };
+      passes: {
+        total: number | null;
+        key: number | null;
+        accuracy: string | null;
+      };
+      tackles: {
+        total: number | null;
+        blocks: number | null;
+        interceptions: number | null;
+      };
+      duels: {
+        total: number | null;
+        won: number | null;
+      };
+      dribbles: {
+        attempts: number | null;
+        success: number | null;
+        past: number | null;
+      };
+      fouls: {
+        drawn: number | null;
+        committed: number | null;
+      };
+      cards: {
+        yellow: number;
+        red: number;
+      };
+      penalty: {
+        won: number | null;
+        committed: number | null;
+        scored: number | null;
+        missed: number | null;
+        saved: number | null;
+      };
+    }>;
+  }>;
+}
+
+/**
+ * Get player statistics for a specific fixture
+ */
+export async function getFixturePlayerStats(
+  fixtureId: number,
+  callerPage: string = 'unknown'
+): Promise<FixturePlayerStatsResponse[]> {
+  const response = await apiRequest<FixturePlayerStatsResponse[]>({
+    endpoint: '/fixtures/players',
+    params: { fixture: fixtureId },
+    callerPage,
+  });
+  return response.response;
+}

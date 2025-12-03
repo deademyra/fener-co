@@ -19,8 +19,10 @@ export const metadata: Metadata = {
 
 export const revalidate = 3600; // 1 hour
 
+const CALLER_PAGE = 'istatistik';
+
 async function FenerbahceStatsSection() {
-  const fixtures = await getCachedFenerbahceFixtures(CURRENT_SEASON);
+  const fixtures = await getCachedFenerbahceFixtures(CURRENT_SEASON, CALLER_PAGE);
   
   // Biten maçlar
   const finishedMatches = fixtures.filter(f => 
@@ -126,9 +128,9 @@ async function FenerbahceStatsSection() {
 
 async function LeagueStatsSection() {
   const [standings, topScorers, topAssists] = await Promise.all([
-    getCachedStandings(TRACKED_LEAGUES.SUPER_LIG, CURRENT_SEASON),
-    getCachedTopScorers(TRACKED_LEAGUES.SUPER_LIG, CURRENT_SEASON),
-    getCachedTopAssists(TRACKED_LEAGUES.SUPER_LIG, CURRENT_SEASON),
+    getCachedStandings(TRACKED_LEAGUES.SUPER_LIG, CURRENT_SEASON, CALLER_PAGE),
+    getCachedTopScorers(TRACKED_LEAGUES.SUPER_LIG, CURRENT_SEASON, CALLER_PAGE),
+    getCachedTopAssists(TRACKED_LEAGUES.SUPER_LIG, CURRENT_SEASON, CALLER_PAGE),
   ]);
   
   return (

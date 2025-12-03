@@ -6,6 +6,8 @@ import { SquadPlayer } from '@/types';
 import { cn, getPositionFull } from '@/lib/utils';
 import { ROUTES } from '@/lib/constants';
 
+// Note: ROUTES.PLAYER_DETAIL now points to /futbolcu/{id}
+
 interface PlayerCardProps {
   player: SquadPlayer;
   showStats?: boolean;

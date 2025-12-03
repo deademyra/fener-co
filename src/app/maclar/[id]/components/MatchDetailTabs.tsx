@@ -31,16 +31,16 @@ export function MatchDetailTabs({
   
   return (
     <div className="mb-6">
-      <div className="flex gap-1 glass-card border border-white/10 rounded-xl p-1">
+      <div className="flex flex-wrap gap-2 p-1 bg-slate-800/50 rounded-xl border border-slate-700/50">
         {visibleTabs.map(tab => (
           <Link
             key={tab.id}
             href={`/maclar/${fixtureId}?tab=${tab.id}`}
             className={cn(
-              'flex-1 px-4 py-3 text-sm font-medium text-center rounded-lg transition-all duration-200',
+              'flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all text-center',
               activeTab === tab.id
-                ? 'bg-fb-navy text-fb-yellow shadow-md'
-                : 'text-gray-400 hover:text-white hover:bg-white/10'
+                ? 'bg-yellow-500 text-slate-900'
+                : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
             )}
           >
             {tab.label}

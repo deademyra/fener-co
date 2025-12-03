@@ -20,9 +20,11 @@ import {
   LineupSection,
   PlayerStatsSection,
   XGDisplay,
-  WinProbabilityBar,
+  MatchPreview,
   HeadToHeadStats,
 } from './components';
+
+const CALLER_PAGE = 'maclar/[id]';
 
 interface MatchDetailPageProps {
   params: { id: string };
@@ -30,7 +32,7 @@ interface MatchDetailPageProps {
 }
 
 export async function generateMetadata({ params }: MatchDetailPageProps): Promise<Metadata> {
-  const fixture = await getCachedFixtureById(parseInt(params.id));
+  const fixture = await getCachedFixtureById(parseInt(params.id), CALLER_PAGE);
   
   if (!fixture) {
     return { title: 'Maç Bulunamadı' };
@@ -45,7 +47,7 @@ export async function generateMetadata({ params }: MatchDetailPageProps): Promis
 export const revalidate = 60;
 
 export default async function MatchDetailPage({ params, searchParams }: MatchDetailPageProps) {
-  const fixture = await getCachedFixtureById(parseInt(params.id));
+  const fixture = await getCachedFixtureById(parseInt(params.id), CALLER_PAGE);
   
   if (!fixture) {
     notFound();
@@ -70,15 +72,15 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
     ? formatGoalScorers(fixture.events, fixture.teams.away.id)
     : '';
   
-  // Fetch predictions and H2H data for pre-match/live matches
+  // Fetch predictions and H2H data for pre-match only (not for live matches)
   let predictions = null;
   let h2hMatches = null;
   
-  if (isPreMatch || isLiveMatch) {
+  if (isPreMatch) {
     // Fetch in parallel
     const [predictionsData, h2hData] = await Promise.all([
-      getCachedPredictions(fixture.fixture.id),
-      getCachedHeadToHead(fixture.teams.home.id, fixture.teams.away.id, 10),
+      getCachedPredictions(fixture.fixture.id, CALLER_PAGE),
+      getCachedHeadToHead(fixture.teams.home.id, fixture.teams.away.id, 10, CALLER_PAGE),
     ]);
     
     predictions = predictionsData;
@@ -86,41 +88,43 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
   }
   
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
       {/* Match Header */}
-      <div className="card p-6 md:p-8 mb-6">
+      <div className="card p-4 sm:p-6 md:p-8 mb-4 sm:mb-6">
         {/* League & Status */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <Image 
-              src={fixture.league.logo} 
-              alt="" 
-              width={24} 
-              height={24} 
-              className="dark-logo-filter"
-            />
-            <span className="text-fb-yellow font-medium">{leagueName}</span>
+        <div className="flex items-center justify-between mb-4 sm:mb-6 flex-wrap gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="h-5 w-5 sm:h-6 sm:w-6 flex items-center justify-center flex-shrink-0">
+              <Image 
+                src={fixture.league.logo} 
+                alt="" 
+                width={24} 
+                height={24} 
+                className="dark-logo-filter max-h-5 sm:max-h-6 w-auto object-contain"
+              />
+            </div>
+            <span className="text-fb-yellow font-medium text-sm sm:text-base truncate">{leagueName}</span>
             {fixture.league.round && (
-              <span className="text-gray-500 text-sm">• {fixture.league.round}</span>
+              <span className="hidden sm:inline text-gray-500 text-sm">• {fixture.league.round}</span>
             )}
           </div>
           
           {isLiveMatch ? (
-            <span className="badge badge-live">
-              <span className="w-2 h-2 bg-red-400 rounded-full mr-2 animate-pulse-live" />
+            <span className="badge badge-live text-xs sm:text-sm">
+              <span className="w-2 h-2 bg-red-400 rounded-full mr-1.5 sm:mr-2 animate-pulse-live" />
               {getStatusText(fixture.fixture.status.short, fixture.fixture.status.elapsed)}
             </span>
           ) : (
-            <span className="text-sm text-gray-400">{full}</span>
+            <span className="text-xs sm:text-sm text-gray-400 flex-shrink-0">{full}</span>
           )}
         </div>
         
         {/* Teams & Score */}
-        <div className="flex items-center justify-center gap-6 md:gap-12 mb-6">
+        <div className="flex items-center justify-center gap-3 sm:gap-6 md:gap-12 mb-4 sm:mb-6">
           {/* Home */}
-          <div className="flex-1 flex flex-col items-center">
+          <div className="flex-1 flex flex-col items-center min-w-0">
             <div className={cn(
-              'w-20 h-20 md:w-24 md:h-24 rounded-full bg-white/10 p-3 mb-3',
+              'w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-white/10 p-2 sm:p-3 mb-2 sm:mb-3 flex-shrink-0',
               isFBHome && 'ring-2 ring-fb-yellow/30'
             )}>
               <Image
@@ -132,29 +136,29 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
               />
             </div>
             <h2 className={cn(
-              'font-display text-xl md:text-2xl text-center',
+              'font-display text-sm sm:text-xl md:text-2xl text-center truncate max-w-[100px] sm:max-w-none',
               isFBHome ? 'text-fb-yellow' : 'text-white'
             )}>
               {fixture.teams.home.name}
             </h2>
             {homeGoals && (
-              <p className="text-sm text-gray-400 mt-2 text-center">{homeGoals}</p>
+              <p className="text-xs sm:text-sm text-gray-400 mt-1 sm:mt-2 text-center line-clamp-2">{homeGoals}</p>
             )}
           </div>
           
           {/* Score */}
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center flex-shrink-0">
             {isLiveMatch || isFinishedMatch ? (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <span className={cn(
-                  'font-display text-5xl md:text-6xl',
+                  'font-display text-3xl sm:text-5xl md:text-6xl',
                   isLiveMatch && 'text-fb-yellow'
                 )}>
                   {fixture.goals.home ?? 0}
                 </span>
-                <span className="text-3xl text-gray-500">-</span>
+                <span className="text-xl sm:text-3xl text-gray-500">-</span>
                 <span className={cn(
-                  'font-display text-5xl md:text-6xl',
+                  'font-display text-3xl sm:text-5xl md:text-6xl',
                   isLiveMatch && 'text-fb-yellow'
                 )}>
                   {fixture.goals.away ?? 0}
@@ -162,23 +166,23 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
               </div>
             ) : (
               <div className="text-center">
-                <p className="text-4xl font-display text-gray-500">VS</p>
-                <p className="text-xl font-display text-fb-yellow mt-2">{time}</p>
+                <p className="text-2xl sm:text-4xl font-display text-gray-500">VS</p>
+                <p className="text-lg sm:text-xl font-display text-fb-yellow mt-1 sm:mt-2">{time}</p>
               </div>
             )}
             
             {/* Halftime */}
             {fixture.score.halftime.home !== null && (
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-2">
                 İY: {fixture.score.halftime.home} - {fixture.score.halftime.away}
               </p>
             )}
           </div>
           
           {/* Away */}
-          <div className="flex-1 flex flex-col items-center">
+          <div className="flex-1 flex flex-col items-center min-w-0">
             <div className={cn(
-              'w-20 h-20 md:w-24 md:h-24 rounded-full bg-white/10 p-3 mb-3',
+              'w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-white/10 p-2 sm:p-3 mb-2 sm:mb-3 flex-shrink-0',
               isFBAway && 'ring-2 ring-fb-yellow/30'
             )}>
               <Image
@@ -190,24 +194,24 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
               />
             </div>
             <h2 className={cn(
-              'font-display text-xl md:text-2xl text-center',
+              'font-display text-sm sm:text-xl md:text-2xl text-center truncate max-w-[100px] sm:max-w-none',
               isFBAway ? 'text-fb-yellow' : 'text-white'
             )}>
               {fixture.teams.away.name}
             </h2>
             {awayGoals && (
-              <p className="text-sm text-gray-400 mt-2 text-center">{awayGoals}</p>
+              <p className="text-xs sm:text-sm text-gray-400 mt-1 sm:mt-2 text-center line-clamp-2">{awayGoals}</p>
             )}
           </div>
         </div>
         
         {/* Venue & Referee */}
-        <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500">
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
           {fixture.fixture.venue.name && (
-            <span>🏟️ {fixture.fixture.venue.name}, {fixture.fixture.venue.city}</span>
+            <span className="truncate max-w-[200px] sm:max-w-none">🏟️ {fixture.fixture.venue.name}, {fixture.fixture.venue.city}</span>
           )}
           {fixture.fixture.referee && (
-            <span>👤 {fixture.fixture.referee}</span>
+            <span className="truncate">👤 {fixture.fixture.referee}</span>
           )}
         </div>
       </div>
@@ -223,16 +227,35 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
       {/* Tab Content */}
       {activeTab === 'macdetay' && (
         <>
-          {/* Pre-match / Live: Show Win Probability and H2H */}
-          {(isPreMatch || isLiveMatch) && (
+          {/* Pre-match: Show Match Preview and H2H */}
+          {isPreMatch && (
             <div className="space-y-6 mb-6">
-              {/* Win Probability Bar */}
-              {predictions?.predictions?.percent && (
-                <WinProbabilityBar 
-                  predictions={predictions.predictions}
+              {/* Match Preview (Önizleme) */}
+              {predictions && predictions.teams && (
+                <MatchPreview 
+                  predictions={predictions}
                   homeTeam={fixture.teams.home}
                   awayTeam={fixture.teams.away}
                 />
+              )}
+              
+              {/* Head to Head Stats */}
+              {h2hMatches && h2hMatches.length > 0 && (
+                <HeadToHeadStats 
+                  matches={h2hMatches}
+                  homeTeam={fixture.teams.home}
+                  awayTeam={fixture.teams.away}
+                />
+              )}
+              
+              {/* If no predictions or H2H, show a message */}
+              {!predictions?.predictions?.percent && (!h2hMatches || h2hMatches.length === 0) && (
+                <div className="card p-8 text-center">
+                  <p className="text-gray-400">Maç öncesi veriler henüz yüklenmedi</p>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Maç istatistikleri, maç başladıktan sonra görüntülenecektir.
+                  </p>
+                </div>
               )}
             </div>
           )}
@@ -285,7 +308,7 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
             </div>
           )}
           
-          {/* Live Match: Show both predictions and match data */}
+          {/* Live Match: Show match data only (no Preview or H2H) */}
           {isLiveMatch && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Left Column */}
@@ -330,30 +353,6 @@ export default async function MatchDetailPage({ params, searchParams }: MatchDet
                   />
                 )}
               </div>
-            </div>
-          )}
-          
-          {/* Pre-match: Show H2H below Win Probability */}
-          {isPreMatch && (
-            <div className="space-y-6">
-              {/* Head to Head Stats */}
-              {h2hMatches && h2hMatches.length > 0 && (
-                <HeadToHeadStats 
-                  matches={h2hMatches}
-                  homeTeam={fixture.teams.home}
-                  awayTeam={fixture.teams.away}
-                />
-              )}
-              
-              {/* If no predictions or H2H, show a message */}
-              {!predictions?.predictions?.percent && (!h2hMatches || h2hMatches.length === 0) && (
-                <div className="card p-8 text-center">
-                  <p className="text-gray-400">Maç öncesi veriler henüz yüklenmedi</p>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Maç istatistikleri, maç başladıktan sonra görüntülenecektir.
-                  </p>
-                </div>
-              )}
             </div>
           )}
         </>

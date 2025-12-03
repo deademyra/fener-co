@@ -116,13 +116,15 @@ export function LiveScoreHero({ matches, liveMatch }: LiveScoreHeroProps) {
           {/* League & Date */}
           <div className="text-center mb-6">
             <div className="flex items-center justify-center gap-2 mb-1">
-              <Image
-                src={currentMatch.league.logo}
-                alt={currentMatch.league.name}
-                width={24}
-                height={24}
-                className="object-contain"
-              />
+              <div className="h-6 w-6 flex items-center justify-center flex-shrink-0">
+                <Image
+                  src={currentMatch.league.logo}
+                  alt={currentMatch.league.name}
+                  width={24}
+                  height={24}
+                  className="object-contain max-h-6 w-auto"
+                />
+              </div>
               <span className="text-fb-yellow font-medium">{leagueName}</span>
             </div>
             {!isLiveMatch && (

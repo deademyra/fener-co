@@ -5,5 +5,5 @@ export { TimelineSection } from './TimelineSection';
 export { LineupSection } from './LineupSection';
 export { PlayerStatsSection } from './PlayerStatsSection';
 export { XGDisplay } from './XGDisplay';
-export { WinProbabilityBar } from './WinProbabilityBar';
+export { MatchPreview } from './MatchPreview';
 export { HeadToHeadStats } from './HeadToHeadStats';

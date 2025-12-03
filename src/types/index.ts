@@ -285,7 +285,7 @@ export interface PlayerSeasonStats {
   team: Team;
   league: League;
   games: {
-    appearances: number | null;
+    appearences: number | null; // Note: API uses this spelling
     lineups: number | null;
     minutes: number | null;
     number: number | null;
@@ -362,6 +362,7 @@ export interface SquadPlayer {
   number: number | null;
   position: string;
   photo: string;
+  nationality?: string; // Optional - may not always be available from API
 }
 
 export interface Squad {
@@ -560,4 +561,156 @@ export interface MatchCardData {
 
 export interface LiveMatchData extends MatchCardData {
   events: FixtureEvent[];
+}
+
+// =============================================
+// API STATUS TYPES
+// =============================================
+
+export interface ApiStatusResponse {
+  account: {
+    firstname: string;
+    lastname: string;
+    email: string;
+  };
+  subscription: {
+    plan: string;
+    end: string;
+    active: boolean;
+  };
+  requests: {
+    current: number;
+    limit_day: number;
+  };
+}
+
+// =============================================
+// PLAYER TRANSFER TYPES
+// =============================================
+
+export interface PlayerTransfer {
+  date: string;
+  type: string;
+  teams: {
+    in: {
+      id: number;
+      name: string;
+      logo: string;
+    };
+    out: {
+      id: number;
+      name: string;
+      logo: string;
+    };
+  };
+}
+
+export interface PlayerTransferResponse {
+  player: {
+    id: number;
+    name: string;
+  };
+  update: string;
+  transfers: PlayerTransfer[];
+}
+
+// =============================================
+// PLAYER TROPHY TYPES
+// =============================================
+
+export interface PlayerTrophy {
+  league: string;
+  country: string;
+  season: string | null;
+  place: string;
+}
+
+// =============================================
+// PLAYER SIDELINED (INJURY HISTORY) TYPES
+// =============================================
+
+export interface PlayerSidelined {
+  type: string;
+  start: string;
+  end: string;
+}
+
+// =============================================
+// PLAYER TEAMS TYPES
+// =============================================
+
+export interface PlayerTeam {
+  team: {
+    id: number;
+    name: string;
+    logo: string;
+  };
+  seasons: number[];
+}
+
+// =============================================
+// FIXTURE PLAYER INDIVIDUAL STATS
+// =============================================
+
+export interface FixtureIndividualPlayerStats {
+  player: {
+    id: number;
+    name: string;
+    photo: string;
+  };
+  statistics: Array<{
+    games: {
+      minutes: number | null;
+      number: number | null;
+      position: string | null;
+      rating: string | null;
+      captain: boolean;
+      substitute: boolean;
+    };
+    offsides: number | null;
+    shots: {
+      total: number | null;
+      on: number | null;
+    };
+    goals: {
+      total: number | null;
+      conceded: number | null;
+      assists: number | null;
+      saves: number | null;
+    };
+    passes: {
+      total: number | null;
+      key: number | null;
+      accuracy: string | null;
+    };
+    tackles: {
+      total: number | null;
+      blocks: number | null;
+      interceptions: number | null;
+    };
+    duels: {
+      total: number | null;
+      won: number | null;
+    };
+    dribbles: {
+      attempts: number | null;
+      success: number | null;
+      past: number | null;
+    };
+    fouls: {
+      drawn: number | null;
+      committed: number | null;
+    };
+    cards: {
+      yellow: number;
+      red: number;
+    };
+    penalty: {
+      won: number | null;
+      committed: number | null;
+      scored: number | null;
+      missed: number | null;
+      saved: number | null;
+    };
+  }>;
 }

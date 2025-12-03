@@ -127,6 +127,15 @@
    ============================================= */
 
 @layer components {
+  /* Glass Card - Tabs Container (no backdrop-filter to allow dropdown to escape stacking context) */
+  .glass-card-tabs {
+    background: rgba(30, 41, 59, 0.95);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-normal);
+    /* NO backdrop-filter here - allows z-index to work properly for dropdowns */
+  }
+  
   /* Glass Card - Primary */
   .glass-card {
     background: var(--bg-card);
@@ -428,12 +437,81 @@
      ============================================= */
   
   .match-card {
-    @apply glass-card-interactive p-4;
+    @apply relative overflow-hidden p-4;
+    background: rgba(30, 41, 59, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(71, 85, 105, 0.5);
+    border-radius: 0.75rem;
+    transition: all 300ms ease;
+  }
+  
+  .match-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(234, 179, 8, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 20px rgba(234, 179, 8, 0.1);
+  }
+  
+  .match-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(234, 179, 8, 0.05) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 300ms ease;
+    pointer-events: none;
+  }
+  
+  .match-card:hover::after {
+    opacity: 1;
   }
   
   .match-card-live {
     border-color: rgba(239, 68, 68, 0.5);
     background: rgba(239, 68, 68, 0.05);
+  }
+  
+  .match-card-live:hover {
+    border-color: rgba(239, 68, 68, 0.8);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 20px rgba(239, 68, 68, 0.2);
+  }
+
+  /* =============================================
+     TOURNAMENT STYLE CARDS (Reusable)
+     ============================================= */
+  
+  .tournament-card {
+    @apply relative overflow-hidden rounded-xl;
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid rgba(71, 85, 105, 0.5);
+    transition: all 300ms ease;
+  }
+  
+  .tournament-card:hover {
+    border-color: rgba(234, 179, 8, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 20px rgba(234, 179, 8, 0.1);
+  }
+  
+  .tournament-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom right, rgba(15, 23, 42, 0.5) 0%, transparent 100%);
+    pointer-events: none;
+  }
+  
+  .tournament-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(234, 179, 8, 0.05) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 300ms ease;
+    pointer-events: none;
+  }
+  
+  .tournament-card:hover::after {
+    opacity: 1;
   }
 
   /* =============================================
@@ -596,13 +674,13 @@
      ============================================= */
   
   .team-logo {
-    @apply relative flex items-center justify-center rounded-full p-2;
+    @apply relative flex items-center justify-center rounded-full;
     background: rgba(255, 255, 255, 0.1);
   }
   
-  .team-logo-lg { @apply w-20 h-20 md:w-24 md:h-24; }
-  .team-logo-md { @apply w-12 h-12 md:w-14 md:h-14; }
-  .team-logo-sm { @apply w-8 h-8; }
+  .team-logo-lg { @apply w-20 h-20 md:w-24 md:h-24 p-3; }
+  .team-logo-md { @apply w-12 h-12 md:w-14 md:h-14 p-2; }
+  .team-logo-sm { @apply w-8 h-8 p-1; }
 
   /* =============================================
      LOADING STATES
@@ -810,10 +888,192 @@
    RESPONSIVE UTILITIES
    ============================================= */
 
+/* Touch-friendly minimum sizes */
 @media (max-width: 640px) {
   .touch-target {
     min-height: 44px;
     min-width: 44px;
+  }
+  
+  /* Ensure buttons and interactive elements are touch-friendly */
+  button,
+  a[role="button"],
+  .btn,
+  .tab-btn,
+  .nav-link {
+    min-height: 44px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  
+  /* Improve text readability on mobile */
+  body {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  
+  /* Reduce large gaps on mobile */
+  .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  
+  /* Prevent horizontal scroll from large elements */
+  .card,
+  .glass-card,
+  .glass-card-interactive,
+  .glass-card-solid {
+    max-width: 100%;
+  }
+  
+  /* Allow overflow for dropdowns */
+  .glass-card.overflow-visible,
+  .overflow-visible .glass-card {
+    overflow: visible !important;
+  }
+  
+  /* Dropdown z-index fix - escape stacking context */
+  .isolate {
+    isolation: isolate;
+  }
+  
+  [style*="z-index: 9999"] {
+    z-index: 9999 !important;
+  }
+  
+  /* Mobile-optimized table */
+  .data-table {
+    font-size: 13px;
+  }
+  
+  .data-table th,
+  .data-table td {
+    padding: 8px 4px;
+  }
+  
+  /* Reduce score display size on mobile */
+  .score-display {
+    font-size: 2rem;
+  }
+  
+  /* Team logo size adjustments */
+  .team-logo-lg {
+    width: 4rem;
+    height: 4rem;
+    padding: 0.5rem;
+  }
+  
+  /* Improve form dot visibility on mobile */
+  .form-dot {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+}
+
+/* Very small screens (iPhone SE and similar) */
+@media (max-width: 375px) {
+  .container {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  
+  body {
+    font-size: 15px;
+  }
+  
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.25rem; }
+  h3 { font-size: 1.125rem; }
+  h4 { font-size: 1rem; }
+  
+  .score-display {
+    font-size: 1.75rem;
+  }
+  
+  .team-logo-lg {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+  
+  /* Smaller tabs on very small screens */
+  .tabs {
+    gap: 2px;
+    padding: 2px;
+  }
+  
+  .tab-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  
+  /* Compact form indicators */
+  .form-dot {
+    width: 18px;
+    height: 18px;
+    font-size: 9px;
+  }
+}
+
+/* Tablet portrait mode */
+@media (min-width: 640px) and (max-width: 768px) {
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+/* Mobile-specific truncation helpers */
+@layer utilities {
+  .truncate-mobile {
+    @apply truncate;
+    max-width: 80px;
+  }
+  
+  @media (min-width: 375px) {
+    .truncate-mobile {
+      max-width: 100px;
+    }
+  }
+  
+  @media (min-width: 640px) {
+    .truncate-mobile {
+      max-width: 150px;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .truncate-mobile {
+      max-width: none;
+    }
+  }
+  
+  /* Mobile-first gap utilities */
+  .gap-responsive {
+    gap: 0.5rem;
+  }
+  
+  @media (min-width: 640px) {
+    .gap-responsive {
+      gap: 1rem;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .gap-responsive {
+      gap: 1.5rem;
+    }
+  }
+  
+  /* Mobile text size override */
+  .text-mobile-safe {
+    font-size: 14px;
+  }
+  
+  @media (min-width: 640px) {
+    .text-mobile-safe {
+      font-size: inherit;
+    }
   }
 }
 
