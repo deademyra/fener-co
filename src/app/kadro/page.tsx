@@ -62,18 +62,18 @@ const POSITION_ORDER: PositionKey[] = ['Goalkeeper', 'Defender', 'Midfielder', '
 // Coach Card Component
 function CoachSection({ coach }: { coach: Coach }) {
   return (
-    <div className="bg-gradient-to-r from-slate-800/80 to-slate-900/80 rounded-xl border border-slate-700/50 p-6 mb-8">
-      <div className="flex items-center gap-2 mb-4">
+    <div className="bg-gradient-to-r from-slate-800/80 to-slate-900/80 rounded-xl border border-slate-700/50 p-4 sm:p-6 mb-6 sm:mb-8">
+      <div className="flex items-center gap-2 mb-3 sm:mb-4">
         <User className="w-5 h-5 text-yellow-400" />
         <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">
           Teknik Direktör
         </h2>
       </div>
-      
-      <div className="flex items-center gap-6">
+
+      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
         {/* Coach Photo */}
         <div className="relative flex-shrink-0">
-          <div className="w-24 h-24 rounded-xl overflow-hidden bg-slate-700 ring-2 ring-yellow-500/30">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-slate-700 ring-2 ring-yellow-500/30">
             <Image
               src={coach.photo}
               alt={coach.name}
@@ -83,11 +83,11 @@ function CoachSection({ coach }: { coach: Coach }) {
             />
           </div>
         </div>
-        
+
         {/* Coach Info */}
-        <div className="flex-1">
-          <h3 className="text-2xl font-bold text-white mb-2">{coach.name}</h3>
-          <div className="flex flex-wrap gap-4 text-sm">
+        <div className="flex-1 text-center sm:text-left">
+          <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">{coach.name}</h3>
+          <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4 text-sm">
             <div className="flex items-center gap-2 text-slate-400">
               <span className="text-slate-500">🌍</span>
               <span>{coach.nationality}</span>
@@ -99,7 +99,7 @@ function CoachSection({ coach }: { coach: Coach }) {
             {coach.career && coach.career.length > 0 && coach.career[0]?.start && (
               <div className="flex items-center gap-2 text-yellow-400">
                 <span className="text-slate-500">📅</span>
-                <span>Görev başlangıcı: {coach.career[0].start}</span>
+                <span className="text-xs sm:text-sm">Görev başlangıcı: {coach.career[0].start}</span>
               </div>
             )}
           </div>
@@ -380,21 +380,21 @@ export default async function KadroPage() {
             ))}
             
             {/* Squad Statistics */}
-            <div className="mt-12 p-6 bg-slate-800/50 rounded-xl border border-slate-700/50">
+            <div className="mt-8 sm:mt-12 p-4 sm:p-6 bg-slate-800/50 rounded-xl border border-slate-700/50">
               <h3 className="text-lg font-semibold text-white mb-4">Kadro Özeti</h3>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <div className="text-center p-4 bg-slate-900/50 rounded-lg">
-                  <div className="text-2xl font-bold text-yellow-400">{totalPlayers}</div>
-                  <div className="text-sm text-slate-400 mt-1">Toplam Oyuncu</div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+                <div className="text-center p-3 sm:p-4 bg-slate-900/50 rounded-lg col-span-2 sm:col-span-1">
+                  <div className="text-xl sm:text-2xl font-bold text-yellow-400">{totalPlayers}</div>
+                  <div className="text-xs sm:text-sm text-slate-400 mt-1">Toplam Oyuncu</div>
                 </div>
                 {POSITION_ORDER.map((position) => {
                   const config = POSITION_CONFIG[position];
                   return (
-                    <div key={position} className="text-center p-4 bg-slate-900/50 rounded-lg">
-                      <div className={`text-2xl font-bold ${config.textClass}`}>
+                    <div key={position} className="text-center p-3 sm:p-4 bg-slate-900/50 rounded-lg">
+                      <div className={`text-xl sm:text-2xl font-bold ${config.textClass}`}>
                         {groupedPlayers[position].length}
                       </div>
-                      <div className="text-sm text-slate-400 mt-1">{config.label}</div>
+                      <div className="text-xs sm:text-sm text-slate-400 mt-1">{config.label}</div>
                     </div>
                   );
                 })}
