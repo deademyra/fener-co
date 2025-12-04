@@ -64,46 +64,46 @@ async function FenerbahceStatsSection() {
     <div className="card p-6">
       <h2 className="section-title text-xl mb-6">FENERBAHÇE SEZON ÖZETİ</h2>
       
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white/10 rounded-lg p-4 text-center">
-          <p className="text-3xl font-bold text-fb-yellow">{finishedMatches.length}</p>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
+        <div className="bg-white/10 rounded-lg p-3 sm:p-4 text-center">
+          <p className="text-2xl sm:text-3xl font-bold text-fb-yellow">{finishedMatches.length}</p>
           <p className="text-xs text-gray-500">Maç</p>
         </div>
-        <div className="bg-white/10 rounded-lg p-4 text-center">
-          <p className="text-3xl font-bold text-white">{points}</p>
+        <div className="bg-white/10 rounded-lg p-3 sm:p-4 text-center">
+          <p className="text-2xl sm:text-3xl font-bold text-white">{points}</p>
           <p className="text-xs text-gray-500">Puan</p>
         </div>
-        <div className="bg-white/10 rounded-lg p-4 text-center">
-          <p className="text-3xl font-bold text-green-400">{wins}</p>
+        <div className="bg-white/10 rounded-lg p-3 sm:p-4 text-center">
+          <p className="text-2xl sm:text-3xl font-bold text-green-400">{wins}</p>
           <p className="text-xs text-gray-500">Galibiyet</p>
         </div>
-        <div className="bg-white/10 rounded-lg p-4 text-center">
-          <p className="text-3xl font-bold text-fb-yellow">{goalsFor}</p>
+        <div className="bg-white/10 rounded-lg p-3 sm:p-4 text-center">
+          <p className="text-2xl sm:text-3xl font-bold text-fb-yellow">{goalsFor}</p>
           <p className="text-xs text-gray-500">Atılan Gol</p>
         </div>
       </div>
-      
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
         <div className="text-center">
-          <p className="text-xl font-bold text-gray-400">{draws}</p>
+          <p className="text-lg sm:text-xl font-bold text-gray-400">{draws}</p>
           <p className="text-xs text-gray-500">Beraberlik</p>
         </div>
         <div className="text-center">
-          <p className="text-xl font-bold text-red-400">{losses}</p>
+          <p className="text-lg sm:text-xl font-bold text-red-400">{losses}</p>
           <p className="text-xs text-gray-500">Mağlubiyet</p>
         </div>
         <div className="text-center">
-          <p className="text-xl font-bold text-red-400">{goalsAgainst}</p>
+          <p className="text-lg sm:text-xl font-bold text-red-400">{goalsAgainst}</p>
           <p className="text-xs text-gray-500">Yenen Gol</p>
         </div>
         <div className="text-center">
-          <p className="text-xl font-bold text-green-400">{cleanSheets}</p>
+          <p className="text-lg sm:text-xl font-bold text-green-400">{cleanSheets}</p>
           <p className="text-xs text-gray-500">Gol Yemeden</p>
         </div>
       </div>
-      
-      <div className="mt-6 pt-6 border-t border-white/10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+
+      <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-white/10">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-center">
           <div>
             <p className="text-sm text-gray-500">Gol Ortalaması</p>
             <p className="text-lg font-bold text-fb-yellow">{avgGoalsFor}</p>

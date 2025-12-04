@@ -791,21 +791,21 @@ async function SimpleStatsSection() {
         </div>
         
         {/* Stats Grid */}
-        <div className="grid grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
           <StatBox label="Maç" value={totalMatches} />
           <StatBox label="Galibiyet" value={wins} color="green" />
           <StatBox label="Beraberlik" value={draws} color="amber" />
           <StatBox label="Mağlubiyet" value={losses} color="red" />
         </div>
-        
-        <div className="grid grid-cols-4 gap-4 mb-6">
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
           <StatBox label="Atılan Gol" value={goalsFor} subLabel={`ort. ${goals.for.average.total}`} color="green" />
           <StatBox label="Yenen Gol" value={goalsAgainst} subLabel={`ort. ${goals.against.average.total}`} color="red" />
           <StatBox label="Clean Sheet" value={clean_sheet.total} color="blue" />
           <StatBox label="Gol Atamayan" value={failed_to_score.total} />
         </div>
-        
-        <div className="grid grid-cols-2 gap-4 mb-6">
+
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
           <StatBox label="Sarı Kart" value={yellowCards} color="amber" />
           <StatBox label="Kırmızı Kart" value={redCards} color="red" />
         </div>
